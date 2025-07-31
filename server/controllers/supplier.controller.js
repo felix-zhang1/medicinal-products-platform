@@ -1,4 +1,3 @@
-import { where } from "sequelize";
 import Supplier from "../models/supplier.model.js";
 
 class SupplierController {
