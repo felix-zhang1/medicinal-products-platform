@@ -1,5 +1,6 @@
 import express from "express";
 import productRoutes from "../routes/product.route.js";
+import supplierRoutes from "../routes/supplier.route.js";
 import Product from "../models/product.model.js";
 import Supplier from "../models/supplier.model.js";
 import sequelize from "../config/db.config.js";
@@ -9,6 +10,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/api/products", productRoutes); 
+app.use("/api/suppliers", supplierRoutes);
 
 // initialize models
 function initializeModels(){
