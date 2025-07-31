@@ -1,6 +1,7 @@
 import express from "express";
 import productRoutes from "../routes/product.route.js";
 import Product from "../models/product.model.js";
+import Supplier from "../models/supplier.model.js";
 import sequelize from "../config/db.config.js";
 
 // instantiate the Express, load midwares, mount routes
@@ -12,6 +13,7 @@ app.use("/api/products", productRoutes);
 // initialize models
 function initializeModels(){
     Product.initialize(sequelize);
+    Supplier.initialize(sequelize);
 }
 
 // connect and initialize database (also sync models with database)
