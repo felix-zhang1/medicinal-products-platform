@@ -17,7 +17,8 @@ function initializeModels(){
 // connect and initialize database (also sync models with database)
 async function initializeDatabase () {
     try {
-        await sequelize.sync();
+        // initialize database and allow to change table structure automatically
+        await sequelize.sync({alter: true});
         console.log("database sync successfully");
         
     } catch (error) {

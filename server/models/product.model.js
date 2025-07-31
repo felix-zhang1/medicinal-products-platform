@@ -15,6 +15,15 @@ class Product extends Model {
         price: {
           type: DataTypes.FLOAT,
         },
+        stock: {
+          type: DataTypes.INTEGER,
+        },
+        image_url: {
+          type: DataTypes.STRING,
+        },
+        category: {
+          type: DataTypes.STRING,
+        },
       },
       {
         sequelize,
