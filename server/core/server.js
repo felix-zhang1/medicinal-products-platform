@@ -1,0 +1,29 @@
+import express from "express";
+import productRoutes from "../routes/product.route.js";
+import Product from "../models/product.model.js";
+import sequelize from "../config/db.config.js";
+
+// instantiate the Express, load midwares, mount routes
+const app = express();
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use("/api/products", productRoutes); 
+
+// initialize models
+function initializeModels(){
+    Product.initialize(sequelize);
+}
+
+// connect and initialize database (also sync models with database)
+async function initializeDatabase () {
+    try {
+        await sequelize.sync();
+        console.log("database sync successfully");
+        
+    } catch (error) {
+        console.error("database sync failed", error);
+    }    
+};
+
+export {initializeModels, initializeDatabase, app};
+

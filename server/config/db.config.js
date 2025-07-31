@@ -1,16 +1,18 @@
 import { Sequelize } from "sequelize";
 import dotenv from "dotenv";
 
-dotenv.config(); // 加载 .env 文件中的数据库配置
+// load environment virables from .env file to process.env
+dotenv.config();
 
+// define and instantiate a Sequelize object
 const sequelize = new Sequelize(
-    process.env.DB_NAME,
-    process.env.DB_USER,
-    process.env.DB_PASSWORD,
-    {
-        host:process.env.DB_HOST,
-        dialect:"mysql",
-    }
+  process.env.DB_NAME,
+  process.env.DB_USER,
+  process.env.DB_PASSWORD,
+  {
+    host: process.env.DB_HOST,
+    dialect: "mysql",
+  }
 );
 
 export default sequelize;
