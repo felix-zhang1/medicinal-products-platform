@@ -16,13 +16,13 @@ class Supplier extends Model {
         },
         description: {
           type: DataTypes.TEXT,
-        },        
+        },
         image_url: {
           type: DataTypes.STRING,
         },
         address: {
-            type: DataTypes.STRING,
-        },        
+          type: DataTypes.STRING,
+        },
       },
       {
         sequelize,
