@@ -13,6 +13,7 @@
   "license": "MIT",
   "description": "Backend API for NZ Medicinal Products Platform",
   "dependencies": {
+    "bcryptjs": "^3.0.2",
     "dotenv": "^17.2.0",
     "express": "^5.1.0",
     "mysql2": "^3.14.2",
