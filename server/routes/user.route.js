@@ -6,16 +6,21 @@ import { verifyToken } from "../middlewares/verifyToken.js";
 
 const router = express.Router();
 
+// register a new user
 router.post("/register", userController.registerUser);
 
+// login
 router.post("/login", userController.loginUser);
 
+// view account details
 router.get("/:id", verifyToken, userController.getUserProfile);
 
+// update 
 router.put("/:id", verifyToken, async (req, res, next) => {
     const requester = req.user;
     const targetId = parseInt(req.params.id);
 
+    // only "admin" or "user themselves" can update
     if (requester.role !== "admin" && requester.id !== targetId) {
         return res.status(403).json({ message: "Only owner or admin can update this user" });
     }
@@ -23,6 +28,7 @@ router.put("/:id", verifyToken, async (req, res, next) => {
     return userController.updateUser(req, res, next)
 });
 
+// delete
 router.delete("/:id", verifyToken, verifyRole("admin"), userController.deleteUser);
 
 export default router;
