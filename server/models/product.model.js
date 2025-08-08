@@ -20,10 +20,27 @@ class Product extends Model {
         },
         image_url: {
           type: DataTypes.STRING,
+        },        
+        category_id :{
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: {
+            model: "categories",
+            key: "id"
+          },
+          onDelete: "SET NULL",
+          onUpdate: "CASCADE"
         },
-        category: {
-          type: DataTypes.STRING,
-        },
+        supplier_id: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: {
+            model: "suppliers",
+            key: "id"
+          },
+          onDelete: "SET NULL",
+          onUpdate: "CASCADE"
+        }
       },
       {
         sequelize,

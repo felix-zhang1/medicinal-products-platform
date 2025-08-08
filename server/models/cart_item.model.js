@@ -21,6 +21,26 @@ class CartItem extends Model {
           type: DataTypes.INTEGER,
           allowNull: false,
           defaultValue: 1
+        },
+        user_id: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: {
+            model: "users",
+            key: "id"
+          },
+          onDelete: "CASCADE",
+          onUpdate: "CASCADE"
+        },
+        product_id: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: {
+            model: "products",
+            key: "id"
+          },
+          onDelete: "CASCADE",
+          onUpdate: "CASCADE"
         }
       },
       {

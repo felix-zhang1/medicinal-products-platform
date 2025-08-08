@@ -24,6 +24,26 @@ class OrderItem extends Model {
         price: {
           type: DataTypes.FLOAT,
           allowNull: false
+        },
+        order_id: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: {
+            model: "orders",
+            key: "id"
+          },
+          onDelete: "CASCADE",
+          onUpdate: "CASCADE"
+        },
+        product_id: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: {
+            model: "products",
+            key: "id"
+          },
+          onDelete: "CASCADE",
+          onUpdate: "CASCADE"
         }
       },
       {

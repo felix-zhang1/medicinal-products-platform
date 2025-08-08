@@ -5,7 +5,7 @@ class Category extends Model {
     Category.init(
       {
         id: {
-          type: DataTypes.STRING,
+          type: DataTypes.INTEGER,
           autoIncrement: true,
           primaryKey: true
         },
@@ -16,10 +16,16 @@ class Category extends Model {
         parent_id: {
           type: DataTypes.INTEGER,
           allowNull: true,
-          level: {
-            type: DataTypes.INTEGER,
-            defaultValue: 1
-          }
+          references: {
+            model: "categories",
+            key: "id"
+          },
+          onDelete: "SET NULL",
+          onUpdate: "CASCADE"
+        },
+        level: {
+          type: DataTypes.INTEGER,
+          defaultValue: 1
         }
       },
       {

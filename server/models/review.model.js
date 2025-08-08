@@ -27,6 +27,26 @@ class Review extends Model {
         created_at: {
           type: DataTypes.DATE,
           defaultValue: DataTypes.NOW
+        },
+        user_id: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: {
+            model: "users",
+            key: "id"
+          },
+          onDelete: "CASCADE",
+          onUpdate: "CASCADE"
+        },
+        product_id: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: {
+            model: "products",
+            key: "id"
+          },
+          onDelete: "CASCADE",
+          onUpdate: "CASCADE"
         }
       },
       {

@@ -1,4 +1,4 @@
-import {initializeModels, initializeDatabase, app} from "./core/server.js";
+import {initializeModels, defineModelRelations, initializeDatabase, app} from "./core/server.js";
 
 // Load environment variable configurations, set server protocol, host, port
 const PROTOCOL = process.env.PROTOCOL || "http";
@@ -8,6 +8,7 @@ const PORT = process.env.PORT || 8000;
 // start the server
 async function startServer() {
   initializeModels();
+  defineModelRelations();
   await initializeDatabase();
   try {
     app.listen(PORT, () => {
