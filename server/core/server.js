@@ -1,7 +1,13 @@
 import express from "express";
 import productRoutes from "../routes/product.route.js";
 import supplierRoutes from "../routes/supplier.route.js";
-import userRoutes from "../routes/user.route.js"
+import userRoutes from "../routes/user.route.js";
+import categoryRoutes from "../routes/category.route.js";
+import cartItemRoutes from "../routes/cart_item.route.js";
+import favoriteRoutes from "../routes/favorite.route.js";
+import orderRoutes from "../routes/order.route.js";
+import orderItemRoutes from "../routes/order_item.route.js";
+import reviewRoutes from "../routes/review.route.js";
 
 import Product from "../models/product.model.js";
 import Supplier from "../models/supplier.model.js";
@@ -22,6 +28,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/products", productRoutes);
 app.use("/api/suppliers", supplierRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/categories", categoryRoutes);
+app.use("/api/cart-items", cartItemRoutes);
+app.use("/api/favorites", favoriteRoutes);
+app.use("/api/orders", orderRoutes);
+app.use("/api/order-items", orderItemRoutes);
+app.use("/api/reviews", reviewRoutes);
 
 // initialize models
 function initializeModels() {
