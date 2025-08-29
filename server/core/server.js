@@ -9,6 +9,8 @@ import orderRoutes from "../routes/order.route.js";
 import orderItemRoutes from "../routes/order_item.route.js";
 import reviewRoutes from "../routes/review.route.js";
 
+import paymentRoutes from "../routes/payment.route.js";
+
 import Product from "../models/product.model.js";
 import Supplier from "../models/supplier.model.js";
 import User from "../models/user.model.js";
@@ -34,6 +36,7 @@ app.use("/api/favorites", favoriteRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/order-items", orderItemRoutes);
 app.use("/api/reviews", reviewRoutes);
+app.use("/api/payment", paymentRoutes);
 
 // initialize models
 function initializeModels() {
