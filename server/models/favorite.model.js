@@ -7,42 +7,34 @@ class Favorite extends Model {
         id: {
           type: DataTypes.INTEGER,
           autoIncrement: true,
-          primaryKey: true
-        },
-        user_id: {
-          type: DataTypes.INTEGER,
-          allowNull: false
-        },
-        product_id: {
-          type: DataTypes.INTEGER,
-          allowNull: false
+          primaryKey: true,
         },
         user_id: {
           type: DataTypes.INTEGER,
           allowNull: false,
           references: {
             model: "users",
-            key: "id"
+            key: "id",
           },
           onDelete: "CASCADE",
-          onUpdate: "CASCADE"
+          onUpdate: "CASCADE",
         },
         product_id: {
           type: DataTypes.INTEGER,
           allowNull: false,
           references: {
             model: "products",
-            key: "id"
+            key: "id",
           },
           onDelete: "CASCADE",
-          onUpdate: "CASCADE"
-        }
+          onUpdate: "CASCADE",
+        },
       },
       {
         sequelize,
         modelName: "favorite",
         tableName: "favorites",
-        timestamps: false
+        timestamps: false,
       }
     );
   }

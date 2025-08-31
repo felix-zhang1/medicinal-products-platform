@@ -5,6 +5,11 @@ class Product extends Model {
   static initialize(sequelize) {
     Product.init(
       {
+        id: {
+          type: DataTypes.INTEGER,
+          autoIncrement: true,
+          primaryKey: true,
+        },
         name: {
           type: DataTypes.STRING,
           allowNull: false,
@@ -20,27 +25,27 @@ class Product extends Model {
         },
         image_url: {
           type: DataTypes.STRING,
-        },        
-        category_id :{
+        },
+        category_id: {
           type: DataTypes.INTEGER,
           allowNull: false,
           references: {
             model: "categories",
-            key: "id"
+            key: "id",
           },
           onDelete: "SET NULL",
-          onUpdate: "CASCADE"
+          onUpdate: "CASCADE",
         },
         supplier_id: {
           type: DataTypes.INTEGER,
           allowNull: false,
           references: {
             model: "suppliers",
-            key: "id"
+            key: "id",
           },
           onDelete: "SET NULL",
-          onUpdate: "CASCADE"
-        }
+          onUpdate: "CASCADE",
+        },
       },
       {
         sequelize,

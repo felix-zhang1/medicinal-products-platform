@@ -7,47 +7,39 @@ class CartItem extends Model {
         id: {
           type: DataTypes.INTEGER,
           autoIncrement: true,
-          primaryKey: true
-        },
-        user_id: {
-          type: DataTypes.INTEGER,
-          allowNull: false
-        },
-        product_id: {
-          type: DataTypes.INTEGER,
-          allowNull: false
+          primaryKey: true,
         },
         quantity: {
           type: DataTypes.INTEGER,
           allowNull: false,
-          defaultValue: 1
+          defaultValue: 1,
         },
         user_id: {
           type: DataTypes.INTEGER,
           allowNull: false,
           references: {
             model: "users",
-            key: "id"
+            key: "id",
           },
           onDelete: "CASCADE",
-          onUpdate: "CASCADE"
+          onUpdate: "CASCADE",
         },
         product_id: {
           type: DataTypes.INTEGER,
           allowNull: false,
           references: {
             model: "products",
-            key: "id"
+            key: "id",
           },
           onDelete: "CASCADE",
-          onUpdate: "CASCADE"
-        }
+          onUpdate: "CASCADE",
+        },
       },
       {
         sequelize,
         modelName: "cart_item",
         tableName: "cart_items",
-        timestamps: false
+        timestamps: false,
       }
     );
   }
