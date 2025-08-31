@@ -1,16 +1,18 @@
 import CartItem from "../models/cart_item.model.js";
 
 class CartItemController {
-
   // add item (create or increment)
   async addItem(req, res) {
     try {
       const user_id = req.user.id;
       const { product_id, quantity = 1 } = req.body;
-      if (!product_id) return res.status(400).json({ error: "product_id is required" });
+      if (!product_id)
+        return res.status(400).json({ error: "product_id is required" });
 
       // find existing
-      const existing = await CartItem.findOne({ where: { user_id, product_id } });
+      const existing = await CartItem.findOne({
+        where: { user_id, product_id },
+      });
       if (existing) {
         existing.quantity += Number(quantity);
         await existing.save();
@@ -28,7 +30,12 @@ class CartItemController {
   async getMyCart(req, res) {
     try {
       const user_id = req.user.id;
-      const items = await CartItem.findAll({ where: { user_id } });
+      const items = await CartItem.findAll({
+        where: { user_id },
+        include: [
+          { model: Product, attributes: ["id", "name", "price", "image_url"] },
+        ],
+      });
       res.status(200).json(items);
     } catch (error) {
       console.error("Fetch cart error:", error);

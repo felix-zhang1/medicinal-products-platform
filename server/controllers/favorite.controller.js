@@ -1,13 +1,13 @@
 import Favorite from "../models/favorite.model.js";
 
 class FavoriteController {
-
   // add a new favorite
   async addFavorite(req, res) {
     try {
       const user_id = req.user.id;
       const { product_id } = req.body;
-      if (!product_id) return res.status(400).json({ error: "product_id is required" });
+      if (!product_id)
+        return res.status(400).json({ error: "product_id is required" });
 
       const exists = await Favorite.findOne({ where: { user_id, product_id } });
       if (exists) return res.status(200).json(exists);
@@ -24,7 +24,12 @@ class FavoriteController {
   async getMyFavorites(req, res) {
     try {
       const user_id = req.user.id;
-      const list = await Favorite.findAll({ where: { user_id } });
+      const list = await Favorite.findAll({
+        where: { user_id },
+        include: [
+          { model: Product, attributes: ["id", "name", "price", "image_url"] },
+        ],
+      });
       res.status(200).json(list);
     } catch (error) {
       console.error("Fetch favorites error:", error);
@@ -38,7 +43,8 @@ class FavoriteController {
       const user_id = req.user.id;
       const { id } = req.params;
       const fav = await Favorite.findByPk(id);
-      if (!fav || fav.user_id !== user_id) return res.status(404).json({ error: "Favorite not found" });
+      if (!fav || fav.user_id !== user_id)
+        return res.status(404).json({ error: "Favorite not found" });
       await fav.destroy();
       res.status(200).json({ message: "Favorite removed successfully" });
     } catch (error) {
