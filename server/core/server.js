@@ -1,4 +1,6 @@
 import express from "express";
+import cors from "cors";
+
 import productRoutes from "../routes/product.route.js";
 import supplierRoutes from "../routes/supplier.route.js";
 import userRoutes from "../routes/user.route.js";
@@ -25,6 +27,17 @@ import sequelize from "../config/db.config.js";
 
 // instantiate the Express, load midwares, mount routes
 const app = express();
+
+// enable CORS for local dev (5173) and optional client origin, allow cookies
+app.use(
+  cors({
+    origin: ["http://localhost:5173", process.env.CLIENT_ORIGIN].filter(
+      Boolean
+    ),
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/api/products", productRoutes);
