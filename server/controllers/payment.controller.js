@@ -1,5 +1,8 @@
 import Stripe from "stripe";
 
+// test
+console.log('STRIPE key present?', !!process.env.STRIPE_SECRET_KEY);
+
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 class PaymentController {

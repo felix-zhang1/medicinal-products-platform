@@ -1,4 +1,12 @@
-import {initializeModels, defineModelRelations, initializeDatabase, app} from "./core/server.js";
+// load environment virables from .env file to process.env
+import "dotenv/config";
+
+import {
+  initializeModels,
+  defineModelRelations,
+  initializeDatabase,
+  app,
+} from "./core/server.js";
 
 // Load environment variable configurations, set server protocol, host, port
 const PROTOCOL = process.env.PROTOCOL || "http";
@@ -12,11 +20,13 @@ async function startServer() {
   await initializeDatabase();
   try {
     app.listen(PORT, () => {
-    console.log(`server running successfully at ${PROTOCOL}://${HOST}:${PORT}`);
-  });
+      console.log(
+        `server running successfully at ${PROTOCOL}://${HOST}:${PORT}`
+      );
+    });
   } catch (error) {
     console.error("failed to start", error);
-  }  
+  }
 }
 
 startServer();

@@ -7,32 +7,27 @@ class Category extends Model {
         id: {
           type: DataTypes.INTEGER,
           autoIncrement: true,
-          primaryKey: true
+          primaryKey: true,
         },
         name: {
-          type: DataTypes.STRING,
-          allowNull: false
+          type: DataTypes.STRING(255),
+          allowNull: false,
         },
         parent_id: {
           type: DataTypes.INTEGER,
           allowNull: true,
-          references: {
-            model: "categories",
-            key: "id"
-          },
-          onDelete: "SET NULL",
-          onUpdate: "CASCADE"
         },
         level: {
           type: DataTypes.INTEGER,
-          defaultValue: 1
-        }
+          defaultValue: 1,
+        },
       },
       {
         sequelize,
         modelName: "category",
         tableName: "categories",
-        timestamps: false
+        timestamps: true,
+        underscored: true,
       }
     );
   }

@@ -1,6 +1,5 @@
 import { Model, DataTypes } from "sequelize";
 
-// define schema for Supplier model, mapping it to the products table in the database
 class Supplier extends Model {
   static initialize(sequelize) {
     Supplier.init(
@@ -11,17 +10,17 @@ class Supplier extends Model {
           primaryKey: true,
         },
         name: {
-          type: DataTypes.STRING,
+          type: DataTypes.STRING(255),
           allowNull: false,
         },
         description: {
           type: DataTypes.TEXT,
         },
         image_url: {
-          type: DataTypes.STRING,
+          type: DataTypes.STRING(1024),
         },
         address: {
-          type: DataTypes.STRING,
+          type: DataTypes.STRING(255),
         },
       },
       {
@@ -29,6 +28,7 @@ class Supplier extends Model {
         modelName: "supplier",
         tableName: "suppliers",
         timestamps: true,
+        underscored: true,
       }
     );
   }

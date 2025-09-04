@@ -5,7 +5,7 @@ class CartItem extends Model {
     CartItem.init(
       {
         id: {
-          type: DataTypes.INTEGER,
+          type: DataTypes,
           autoIncrement: true,
           primaryKey: true,
         },
@@ -17,29 +17,18 @@ class CartItem extends Model {
         user_id: {
           type: DataTypes.INTEGER,
           allowNull: false,
-          references: {
-            model: "users",
-            key: "id",
-          },
-          onDelete: "CASCADE",
-          onUpdate: "CASCADE",
         },
         product_id: {
           type: DataTypes.INTEGER,
           allowNull: false,
-          references: {
-            model: "products",
-            key: "id",
-          },
-          onDelete: "CASCADE",
-          onUpdate: "CASCADE",
         },
       },
       {
         sequelize,
         modelName: "cart_item",
         tableName: "cart_items",
-        timestamps: false,
+        timestamps: true,
+        underscored: true,
       }
     );
   }

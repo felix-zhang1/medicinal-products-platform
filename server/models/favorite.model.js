@@ -12,29 +12,18 @@ class Favorite extends Model {
         user_id: {
           type: DataTypes.INTEGER,
           allowNull: false,
-          references: {
-            model: "users",
-            key: "id",
-          },
-          onDelete: "CASCADE",
-          onUpdate: "CASCADE",
         },
         product_id: {
           type: DataTypes.INTEGER,
           allowNull: false,
-          references: {
-            model: "products",
-            key: "id",
-          },
-          onDelete: "CASCADE",
-          onUpdate: "CASCADE",
         },
       },
       {
         sequelize,
         modelName: "favorite",
         tableName: "favorites",
-        timestamps: false,
+        timestamps: true,
+        underscored: true,
       }
     );
   }

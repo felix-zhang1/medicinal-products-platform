@@ -7,53 +7,32 @@ class Review extends Model {
         id: {
           type: DataTypes.INTEGER,
           autoIncrement: true,
-          primaryKey: true
+          primaryKey: true,
         },
+
         user_id: {
           type: DataTypes.INTEGER,
-          allowNull: false
+          allowNull: false,
         },
         product_id: {
           type: DataTypes.INTEGER,
-          allowNull: false
+          allowNull: false,
         },
+
         rating: {
           type: DataTypes.INTEGER,
-          allowNull: false
+          allowNull: false,
         },
         comment: {
-          type: DataTypes.TEXT
+          type: DataTypes.TEXT,
         },
-        created_at: {
-          type: DataTypes.DATE,
-          defaultValue: DataTypes.NOW
-        },
-        user_id: {
-          type: DataTypes.INTEGER,
-          allowNull: false,
-          references: {
-            model: "users",
-            key: "id"
-          },
-          onDelete: "CASCADE",
-          onUpdate: "CASCADE"
-        },
-        product_id: {
-          type: DataTypes.INTEGER,
-          allowNull: false,
-          references: {
-            model: "products",
-            key: "id"
-          },
-          onDelete: "CASCADE",
-          onUpdate: "CASCADE"
-        }
       },
       {
         sequelize,
         modelName: "review",
         tableName: "reviews",
-        timestamps: false
+        timestamps: true,
+        underscored: true,
       }
     );
   }

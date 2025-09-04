@@ -1,6 +1,5 @@
 import { Model, DataTypes } from "sequelize";
 
-// define schema for product model, mapping it to the products table in the database
 class Product extends Model {
   static initialize(sequelize) {
     Product.init(
@@ -11,40 +10,34 @@ class Product extends Model {
           primaryKey: true,
         },
         name: {
-          type: DataTypes.STRING,
+          type: DataTypes.STRING(255),
           allowNull: false,
         },
         description: {
           type: DataTypes.TEXT,
         },
         price: {
-          type: DataTypes.FLOAT,
+          type: DataTypes.DECIMAL(10, 2),
+          allowNull: false,
+          defaultValue: 0.0,
         },
         stock: {
           type: DataTypes.INTEGER,
+          allowNull: false,
+          defaultValue: 0,
         },
         image_url: {
-          type: DataTypes.STRING,
+          type: DataTypes.STRING(1024),
         },
+
+        // foreign keys
         category_id: {
           type: DataTypes.INTEGER,
-          allowNull: false,
-          references: {
-            model: "categories",
-            key: "id",
-          },
-          onDelete: "SET NULL",
-          onUpdate: "CASCADE",
+          allowNull: true,
         },
         supplier_id: {
           type: DataTypes.INTEGER,
-          allowNull: false,
-          references: {
-            model: "suppliers",
-            key: "id",
-          },
-          onDelete: "SET NULL",
-          onUpdate: "CASCADE",
+          allowNull: true,
         },
       },
       {
@@ -52,6 +45,7 @@ class Product extends Model {
         modelName: "product",
         tableName: "products",
         timestamps: true,
+        underscored: true,
       }
     );
   }

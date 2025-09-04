@@ -53,59 +53,80 @@ function initializeModels() {
 
 // define relations between models
 function defineModelRelations() {
-  // product relations
-  Product.belongsTo(Category, { foreignKey: "category_id" });
-  Category.hasMany(Product, { foreignKey: "category_id" });
+  // Product ↔ Category（允许无分类）
+  Product.belongsTo(Category, {
+    foreignKey: { name: "category_id", allowNull: true },
+    onDelete: "SET NULL",
+    onUpdate: "CASCADE",
+  });
+  Category.hasMany(Product, { foreignKey: { name: "category_id" } });
 
-  Product.belongsTo(Supplier, { foreignKey: "supplier_id" });
-  Supplier.hasMany(Product, { foreignKey: "supplier_id" });
+  // Product ↔ Supplier（允许无供应商）
+  Product.belongsTo(Supplier, {
+    foreignKey: { name: "supplier_id", allowNull: true },
+    onDelete: "SET NULL",
+    onUpdate: "CASCADE",
+  });
+  Supplier.hasMany(Product, { foreignKey: { name: "supplier_id" } });
 
-  Product.hasMany(CartItem, { foreignKey: "product_id" });
-  CartItem.belongsTo(Product, { foreignKey: "product_id" });
+  // Product ↔ CartItem / Favorite / Review / OrderItem
+  Product.hasMany(CartItem, { foreignKey: { name: "product_id" } });
+  CartItem.belongsTo(Product, { foreignKey: { name: "product_id" } });
 
-  Product.hasMany(Favorite, { foreignKey: "product_id" });
-  Favorite.belongsTo(Product, { foreignKey: "product_id" });
+  Product.hasMany(Favorite, { foreignKey: { name: "product_id" } });
+  Favorite.belongsTo(Product, { foreignKey: { name: "product_id" } });
 
-  Product.hasMany(Review, { foreignKey: "product_id" });
-  Review.belongsTo(Product, { foreignKey: "product_id" });
+  Product.hasMany(Review, { foreignKey: { name: "product_id" } });
+  Review.belongsTo(Product, { foreignKey: { name: "product_id" } });
 
-  Product.hasMany(OrderItem, { foreignKey: "product_id" });
-  OrderItem.belongsTo(Product, { foreignKey: "product_id" });
+  Product.hasMany(OrderItem, { foreignKey: { name: "product_id" } });
+  OrderItem.belongsTo(Product, { foreignKey: { name: "product_id" } });
 
-  // user relations
-  User.hasMany(CartItem, { foreignKey: "user_id" });
-  CartItem.belongsTo(User, { foreignKey: "user_id" });
+  // User ↔ CartItem / Favorite / Review / Order
+  User.hasMany(CartItem, { foreignKey: { name: "user_id" } });
+  CartItem.belongsTo(User, { foreignKey: { name: "user_id" } });
 
-  User.hasMany(Favorite, { foreignKey: "user_id" });
-  Favorite.belongsTo(User, { foreignKey: "user_id" });
+  User.hasMany(Favorite, { foreignKey: { name: "user_id" } });
+  Favorite.belongsTo(User, { foreignKey: { name: "user_id" } });
 
-  User.hasMany(Review, { foreignKey: "user_id" });
-  Review.belongsTo(User, { foreignKey: "user_id" });
+  User.hasMany(Review, { foreignKey: { name: "user_id" } });
+  Review.belongsTo(User, { foreignKey: { name: "user_id" } });
 
-  User.hasMany(Order, { foreignKey: "user_id" });
-  Order.belongsTo(User, { foreignKey: "user_id" });
+  User.hasMany(Order, { foreignKey: { name: "user_id" } });
+  Order.belongsTo(User, {
+    foreignKey: { name: "user_id", allowNull: false },
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  });
 
-  // order relations
-  Order.hasMany(OrderItem, { foreignKey: "order_id" });
-  OrderItem.belongsTo(Order, { foreignKey: "order_id" });
+  // Order ↔ OrderItem
+  Order.hasMany(OrderItem, { foreignKey: { name: "order_id" } });
+  OrderItem.belongsTo(Order, { foreignKey: { name: "order_id" } });
 
-  // category sele-reference
-  Category.hasMany(Category, { as: "subcategories", foreignKey: "parent_id" });
-  Category.belongsTo(Category, { as: "parent", foreignKey: "parent_id" });
-
+  // Category 自引用
+  Category.hasMany(Category, {
+    as: "subcategories",
+    foreignKey: { name: "parent_id", allowNull: true },
+    onDelete: "SET NULL",
+    onUpdate: "CASCADE",
+  });
+  Category.belongsTo(Category, {
+    as: "parent",
+    foreignKey: { name: "parent_id", allowNull: true },
+    onDelete: "SET NULL",
+    onUpdate: "CASCADE",
+  });
 }
 
 // connect and initialize database (also sync models with database)
 async function initializeDatabase() {
   try {
     // initialize database and allow to change table structure automatically
-    await sequelize.sync({ alter: true });
+    await sequelize.sync({ force: true });
     console.log("database sync successfully");
-
   } catch (error) {
     console.error("database sync failed", error);
   }
-};
+}
 
 export { initializeModels, defineModelRelations, initializeDatabase, app };
-

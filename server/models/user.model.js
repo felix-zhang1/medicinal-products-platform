@@ -1,6 +1,5 @@
 import { Model, DataTypes } from "sequelize";
 
-// define schema for User model, mapping it to the products table in the database
 class User extends Model {
   static initialize(sequelize) {
     User.init(
@@ -8,35 +7,36 @@ class User extends Model {
         id: {
           type: DataTypes.INTEGER,
           autoIncrement: true,
-          primaryKey: true
+          primaryKey: true,
         },
         username: {
-          type: DataTypes.STRING,
-          allowNull: false
+          type: DataTypes.STRING(255),
+          allowNull: false,
         },
         email: {
-          type: DataTypes.STRING,
+          type: DataTypes.STRING(255),
           allowNull: false,
-          unique: true
+          unique: true,
         },
         password: {
-          type: DataTypes.STRING,
-          allowNull: false
+          type: DataTypes.STRING(255),
+          allowNull: false,
         },
         role: {
           type: DataTypes.STRING,
           allowNull: false,
           defaultValue: "buyer",
           validate: {
-            isIn: [["buyer", "supplier", "admin"]]
-          }
-        }
+            isIn: [["buyer", "supplier", "admin"]],
+          },
+        },
       },
       {
         sequelize,
         modelName: "user",
         tableName: "users",
-        timestamps: true
+        timestamps: true,
+        underscored: true,
       }
     );
   }

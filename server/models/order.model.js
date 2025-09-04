@@ -7,45 +7,31 @@ class Order extends Model {
         id: {
           type: DataTypes.INTEGER,
           autoIncrement: true,
-          primaryKey: true
+          primaryKey: true,
         },
         user_id: {
           type: DataTypes.INTEGER,
-          allowNull: false
+          allowNull: false,
         },
         total_price: {
-          type: DataTypes.FLOAT,
-          allowNull: false
+          type: DataTypes.DECIMAL(10, 2),
+          allowNull: false,
         },
         status: {
           type: DataTypes.STRING,
           allowNull: false,
           defaultValue: "pending",
           validate: {
-            isIn: [["pending", "paid", "shipped", "completed", "cancelled"]]
-          }
-        },
-        user_id: {
-          type: DataTypes.INTEGER,
-          allowNull: false,
-          references: {
-            model: "users",
-            key: "id"
+            isIn: [["pending", "paid", "shipped", "completed", "cancelled"]],
           },
-          onDelete: "CASCADE",
-          onUpdate: "CASCADE"
         },
-        created_at: {
-          type: DataTypes.DATE,
-          defaultValue: DataTypes.NOW
-        }
-
       },
       {
         sequelize,
         modelName: "order",
         tableName: "orders",
-        timestamps: false
+        timestamps: true,
+        underscored: true,
       }
     );
   }

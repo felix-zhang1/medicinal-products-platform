@@ -1,8 +1,4 @@
 import { Sequelize } from "sequelize";
-import dotenv from "dotenv";
-
-// load environment virables from .env file to process.env
-dotenv.config();
 
 // define and instantiate a Sequelize object
 const sequelize = new Sequelize(
