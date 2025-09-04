@@ -12,7 +12,10 @@ router.post("/register", userController.registerUser);
 // login
 router.post("/login", userController.loginUser);
 
-// view account details
+// get current user profile
+router.get("/me", verifyToken, userController.me);
+
+// get user profile by id
 router.get("/:id", verifyToken, userController.getUserProfile);
 
 // update 
@@ -30,5 +33,8 @@ router.put("/:id", verifyToken, async (req, res, next) => {
 
 // delete
 router.delete("/:id", verifyToken, verifyRole("admin"), userController.deleteUser);
+
+// logout and clear cookie
+router.post("/logout", userController.logout);
 
 export default router;
