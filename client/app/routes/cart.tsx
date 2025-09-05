@@ -1,17 +1,21 @@
-import { Form, useLoaderData, useNavigation, redirect } from "react-router-dom";
-import { api } from "~/lib/net";
+import {
+  Form,
+  useLoaderData,
+  useNavigation,
+  redirect,
+  type LoaderFunctionArgs,
+  type ActionFunctionArgs,
+} from "react-router-dom";
+import { createServerApi } from "~/lib/net";
 import type { CartItem, Product } from "~/lib/types";
-import { auth } from "~/lib/auth";
+import { isAuthedServer } from "~/lib/auth.server";
 
-/**
- * Hydrate cart items with product details and calculate total price.
- * @param items - Array of cart items without product details
- * @returns Object containing items with products and the total price
- */
-async function hydrateItems(items: CartItem[]) {
-  // use Map to cache product data and prevent redundant API calls
+/** Hydrate cart items with product details and calculate total price. */
+async function hydrateItems(
+  api: ReturnType<typeof createServerApi>,
+  items: CartItem[]
+) {
   const map = new Map<number, Product>();
-
   await Promise.all(
     items.map(async (ci) => {
       if (!map.has(ci.product_id)) {
@@ -28,16 +32,30 @@ async function hydrateItems(items: CartItem[]) {
   return { items, total };
 }
 
-export async function loader() {
-  if (!auth.isAuthed()) return redirect("/login");
+export async function loader({ request }: LoaderFunctionArgs) {
+  if (!isAuthedServer(request)) {
+    const u = new URL(request.url);
+    return redirect(
+      `/login?redirectTo=${encodeURIComponent(u.pathname + u.search)}`
+    );
+  }
+  const api = createServerApi(request);
   const { data } = await api.get<CartItem[]>("/cart-items/me");
-  return hydrateItems(data);
+  return hydrateItems(api, data);
 }
 
-export async function action({ request }: { request: Request }) {
-  if (!auth.isAuthed()) return redirect("/login");
+export async function action({ request }: ActionFunctionArgs) {
+  if (!isAuthedServer(request)) {
+    const u = new URL(request.url);
+    return redirect(
+      `/login?redirectTo=${encodeURIComponent(u.pathname + u.search)}`
+    );
+  }
+
+  const api = createServerApi(request);
   const fd = await request.formData();
   const intent = String(fd.get("_intent"));
+
   if (intent === "remove") {
     const id = String(fd.get("id"));
     await api.delete(`/cart-items/${id}`);
@@ -69,7 +87,7 @@ export default function Cart() {
             >
               <div className="flex items-center gap-3">
                 <img
-                  src={ci.product?.image_url || "https://placehold.co/80x80"} // Todo: add local image url
+                  src={ci.product?.image_url || "https://placehold.co/80x80"}
                   className="w-20 h-20 object-cover rounded border"
                 />
                 <div>

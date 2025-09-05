@@ -1,4 +1,5 @@
 import Favorite from "../models/favorite.model.js";
+import Product from "../models/product.model.js";
 
 class FavoriteController {
   // add a new favorite

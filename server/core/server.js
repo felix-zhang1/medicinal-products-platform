@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 
 import productRoutes from "../routes/product.route.js";
 import supplierRoutes from "../routes/supplier.route.js";
@@ -31,15 +32,20 @@ const app = express();
 // enable CORS for local dev (5173) and optional client origin, allow cookies
 app.use(
   cors({
-    origin: ["http://localhost:5173", process.env.CLIENT_ORIGIN].filter(
-      Boolean
-    ),
+    origin: [
+      "http://localhost:5173",
+      "http://127.0.0.1:5173",
+      process.env.CLIENT_ORIGIN,
+    ].filter(Boolean),
     credentials: true,
   })
 );
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(cookieParser()); 
+
 app.use("/api/products", productRoutes);
 app.use("/api/suppliers", supplierRoutes);
 app.use("/api/users", userRoutes);

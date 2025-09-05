@@ -1,9 +1,10 @@
-import { useLoaderData } from "react-router-dom";
-import { api } from "~/lib/net";
+import { useLoaderData, type LoaderFunctionArgs } from "react-router-dom";
+import { createServerApi } from "~/lib/net";
 import type { Product } from "~/lib/types";
 import ProductCard from "~/components/ProductCard";
 
-export async function loader() {
+export async function loader({ request }: LoaderFunctionArgs) {
+  const api = createServerApi(request);
   const { data } = await api.get<Product[]>("/products");
   return data;
 }

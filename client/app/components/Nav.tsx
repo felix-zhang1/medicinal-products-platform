@@ -1,11 +1,7 @@
-import { NavLink, useNavigate } from "react-router-dom";
-import { auth } from "~/lib/auth";
+import { NavLink, Form } from "react-router-dom";
+import type { User } from "~/lib/types";
 
-export default function Nav() {
-  const nav = useNavigate();
-  const authed = auth.isAuthed();
-  const role = auth.payload()?.role;
-
+export default function Nav({ user }: { user: User | null }) {
   return (
     <header className="border-b bg-white/80 backdrop-blur">
       <nav className="mx-auto max-w-6xl px-4 py-3 flex items-center gap-4">
@@ -24,22 +20,16 @@ export default function Nav() {
         <NavLink to="/orders" className="text-gray-600">
           My Orders
         </NavLink>
-        {role === "admin" && (
+        {user?.role === "admin" && (
           <NavLink to="/admin" className="text-gray-600">
             Admin
           </NavLink>
         )}
         <div className="ml-auto flex items-center gap-3">
-          {authed ? (
-            <button
-              className="text-gray-600 underline"
-              onClick={() => {
-                auth.logout();
-                nav("/", { replace: true });
-              }}
-            >
-              Logout
-            </button>
+          {user ? (
+            <Form method="post" action="/logout">
+              <button className="text-gray-600 underline">Logout</button>
+            </Form>
           ) : (
             <>
               <NavLink to="/login" className="text-gray-600">

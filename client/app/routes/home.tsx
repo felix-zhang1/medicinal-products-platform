@@ -1,6 +1,6 @@
 import type { Route } from "./+types/home";
-import { useLoaderData, Link } from "react-router-dom";
-import { api } from "~/lib/net";
+import { useLoaderData, Link, type LoaderFunctionArgs } from "react-router-dom";
+import { createServerApi } from "~/lib/net";
 import type { Product } from "~/lib/types";
 import ProductCard from "~/components/ProductCard";
 
@@ -9,9 +9,10 @@ export const meta: Route.MetaFunction = () => [
   { name: "description", content: "Medicinal products platform" },
 ];
 
-export async function loader() {
+export async function loader({ request }: LoaderFunctionArgs) {
+  const api = createServerApi(request);
   const { data } = await api.get<Product[]>("/products");
-  return data.slice(0, 8); // 首页只取前 8 个
+  return data.slice(0, 8);
 }
 
 export default function Home() {

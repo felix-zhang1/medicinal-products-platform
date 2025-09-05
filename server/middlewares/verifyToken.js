@@ -11,9 +11,8 @@ export function verifyToken(req, res, next) {
   }
 
   // 2) Cookie: auth_token=xxx
-  if (!token && req.headers.cookie) {
-    const m = req.headers.cookie.match(/(?:^|;\s*)auth_token=([^;]+)/); // Todo: change to use cookie-parser middleware
-    if (m) token = m[1];
+  if (!token && req.cookies?.auth_token) {
+    token = req.cookies.auth_token;
   }
 
   if (!token) {
@@ -22,7 +21,7 @@ export function verifyToken(req, res, next) {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded; 
+    req.user = decoded;
     next();
   } catch (error) {
     return res.status(401).json({ message: "Invalid or expired token" });

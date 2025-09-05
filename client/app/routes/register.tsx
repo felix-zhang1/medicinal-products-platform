@@ -1,5 +1,5 @@
 import { Form, useActionData, useNavigation, redirect } from "react-router-dom";
-import { api } from "~/lib/net";
+import { createServerApi } from "~/lib/net";
 
 export async function action({ request }: { request: Request }) {
   const fd = await request.formData();
@@ -8,6 +8,7 @@ export async function action({ request }: { request: Request }) {
   const password = String(fd.get("password") || "");
   const role = String(fd.get("role") || "buyer"); // 后端要求 role 必填
   try {
+    const api = createServerApi(request);
     await api.post("/users/register", { username, email, password, role });
     return redirect("/login");
   } catch (e: any) {

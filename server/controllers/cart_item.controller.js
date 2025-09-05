@@ -1,4 +1,5 @@
 import CartItem from "../models/cart_item.model.js";
+import Product from "../models/product.model.js";
 
 class CartItemController {
   // add item (create or increment)

@@ -5,7 +5,7 @@ class CartItem extends Model {
     CartItem.init(
       {
         id: {
-          type: DataTypes,
+          type: DataTypes.INTEGER,
           autoIncrement: true,
           primaryKey: true,
         },

@@ -1,13 +1,25 @@
-import { Form, useLoaderData, useNavigation, redirect } from "react-router-dom";
-import { api } from "~/lib/net";
+import {
+  Form,
+  useLoaderData,
+  useNavigation,
+  redirect,
+  type LoaderFunctionArgs,
+  type ActionFunctionArgs,
+} from "react-router-dom";
+import { createServerApi } from "~/lib/net";
 import type { Product, Review } from "~/lib/types";
-import { auth } from "~/lib/auth";
+import { isAuthedServer } from "~/lib/auth.server";
+import { isAuthedClient } from "~/lib/auth.client";
 
-export async function loader({ params }: { params: { id: string } }) {
+export async function loader({
+  request,
+  params,
+}: LoaderFunctionArgs & { params: { id: string } }) {
+  const api = createServerApi(request);
   const id = params.id;
   const [{ data: product }, { data: allReviews }] = await Promise.all([
     api.get<Product>(`/products/${id}`),
-    api.get<Review[]>(`/reviews`), // Todo: 在后端review的controller，route增加根据product_id调评论的方法（目前是以在前端筛选数据的方式实现）
+    api.get<Review[]>(`/reviews`),
   ]);
   const reviews = allReviews.filter((r) => String(r.product_id) === String(id));
   return { product, reviews };
@@ -16,13 +28,17 @@ export async function loader({ params }: { params: { id: string } }) {
 export async function action({
   request,
   params,
-}: {
-  request: Request;
-  params: { id: string };
-}) {
+}: ActionFunctionArgs & { params: { id: string } }) {
+  if (!isAuthedServer(request)) {
+    const u = new URL(request.url);
+    return redirect(
+      `/login?redirectTo=${encodeURIComponent(u.pathname + u.search)}`
+    );
+  }
+
+  const api = createServerApi(request);
   const form = await request.formData();
   const intent = String(form.get("_intent") || "");
-  if (!auth.isAuthed()) return redirect("/login");
 
   if (intent === "add-to-cart") {
     const qty = Number(form.get("qty") || 1);
@@ -54,7 +70,7 @@ export default function ProductDetail() {
   return (
     <div className="grid md:grid-cols-2 gap-6">
       <img
-        src={product.image_url || "https://placehold.co/800x800?text=No+Image"} // Todo: 创建本地静态图片文件,替换这个URL
+        src={product.image_url || "https://placehold.co/800x800?text=No+Image"}
         alt={product.name}
         className="w-full rounded-lg border"
       />
@@ -113,7 +129,7 @@ export default function ProductDetail() {
           )}
 
           {/* add new rating and comment (logged-in user only) */}
-          {auth.isAuthed() && (
+          {isAuthedClient() && (
             <Form method="post" className="space-y-2">
               <input type="hidden" name="_intent" value="review" />
               <div>
