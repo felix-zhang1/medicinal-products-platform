@@ -43,6 +43,30 @@ class ProductController {
     }
   }
 
+  // get my (supplier) products
+  async getMyProducts(req, res) {
+    try {
+      const userId = req.user.id;
+      // 通过 supplier.owner_user_id = userId 找到 supplier_id
+      // 为避免重复查询，这里直接在路由用 attachSupplierIdIfSupplier 也可，但这里重新查一遍更清晰
+      const { getMySupplierOrNull } = await import(
+        "../middlewares/supplierOwnership.js"
+      );
+      const mySupplier = await getMySupplierOrNull(userId);
+      if (!mySupplier)
+        return res
+          .status(403)
+          .json({ error: "No supplier profile bound to current user" });
+      const products = await Product.findAll({
+        where: { supplier_id: mySupplier.id },
+      });
+      res.status(200).json(products);
+    } catch (error) {
+      console.error("Fetch my products error:", error);
+      res.status(500).json({ error: "Failed to fetch my products" });
+    }
+  }
+
   // get a product by id
   async getProductById(req, res) {
     try {
