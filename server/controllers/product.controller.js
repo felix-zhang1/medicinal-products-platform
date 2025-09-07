@@ -6,7 +6,15 @@ class ProductController {
   // create a product
   async createProduct(req, res) {
     try {
-      const { name, description, price, stock, image_url, category } = req.body;
+      const {
+        name,
+        description,
+        price,
+        stock,
+        image_url,
+        category_id,
+        supplier_id,
+      } = req.body;
 
       const newProduct = await Product.create({
         name,
@@ -14,7 +22,8 @@ class ProductController {
         price,
         stock,
         image_url,
-        category
+        category_id,
+        supplier_id,
       });
 
       res.status(201).json(newProduct);
@@ -71,9 +80,25 @@ class ProductController {
   async updateProductById(req, res) {
     try {
       const { id } = req.params;
-      const { name, description, price, stock, image_url, category } = req.body;
+      const {
+        name,
+        description,
+        price,
+        stock,
+        image_url,
+        category_id,
+        supplier_id,
+      } = req.body;
       const [updatedCount] = await Product.update(
-        { name, description, price, stock, image_url, category },
+        {
+          name,
+          description,
+          price,
+          stock,
+          image_url,
+          category_id,
+          supplier_id,
+        },
         { where: { id } }
       );
 
