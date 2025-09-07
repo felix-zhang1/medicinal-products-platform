@@ -5,6 +5,8 @@ import { verifyRole } from "../middlewares/verifyRole.js";
 
 const router = express.Router();
 
+// Todo: 增加/me,特定用于显示supplier自己的profile
+
 // create a new supplier ("admin", "supplier" have permissions)
 router.post("/", verifyToken, verifyRole(["admin","supplier"]), supplierController.createSupplier);
 
