@@ -5,6 +5,20 @@ import jwt from "jsonwebtoken";
 class UserController {
   constructor() {}
 
+  // admin: list users
+  async listUsers(_req, res) {
+    try {
+      const list = await User.findAll({
+        attributes: { exclude: ["password"] },
+        order: [["id", "ASC"]],
+      });
+      res.status(200).json(list);
+    } catch (error) {
+      console.error("List users error:", error);
+      res.status(500).json({ message: "Server error" });
+    }
+  }
+
   // register a new user
   async registerUser(req, res) {
     try {
@@ -46,7 +60,7 @@ class UserController {
     }
   }
 
-  // login 
+  // login
   async loginUser(req, res) {
     try {
       const { email, password } = req.body;
