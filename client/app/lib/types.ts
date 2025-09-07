@@ -5,8 +5,8 @@ export type Product = {
   price: number;
   stock?: number;
   image_url?: string;
-  category_id: number;
-  supplier_id: number;
+  category_id?: number | null;
+  supplier_id?: number | null;
 };
 
 export type CartItem = {
