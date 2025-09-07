@@ -6,7 +6,9 @@ export async function verifyOrderOwnership(req, res, next) {
     const { orderId } = req.params;
     const order = await Order.findByPk(orderId);
     if (!order) return res.status(404).json({ error: "Order not found" });
-    if (order.user_id !== req.user.id) {
+
+    // verify users' role, and allow "Admin" role to pass
+    if (req.user?.role !== "admin" && order.user_id !== req.user.id) {
       return res.status(403).json({ error: "Forbidden: not your order" });
     }
     next();
