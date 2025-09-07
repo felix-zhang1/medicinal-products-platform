@@ -1,5 +1,6 @@
 
 import { redirect, type ActionFunctionArgs } from "react-router-dom";
+import { createServerApi } from "~/lib/net";
 
 // 最小loader,防止出现报错
 export async function loader() {
@@ -8,19 +9,18 @@ export async function loader() {
 }
 
 export async function action({ request }: ActionFunctionArgs) {
-  const isHttps = new URL(request.url).protocol === "https:";
-  const cookie = [
-    "auth_token=;",
-    "Path=/",
-    "Max-Age=0",
-    "HttpOnly",
-    "SameSite=Lax",
-    isHttps ? "Secure" : undefined,
-  ]
-    .filter(Boolean)
-    .join("; ");
-
-  return redirect("/login", { headers: { "Set-Cookie": cookie } });
+  const api = createServerApi(request);
+  // 调用后端登出（会 clearCookie）
+  const resp = await api.post("/users/logout");
+  // 透传后端 Set-Cookie 到浏览器
+  const out = new Headers();
+  const setCookie = resp.headers["set-cookie"];
+  if (Array.isArray(setCookie)) {
+    for (const c of setCookie) out.append("Set-Cookie", c);
+  } else if (setCookie) {
+    out.append("Set-Cookie", setCookie);
+  }
+  return redirect("/login", { headers: out });
 }
 
 export default function Logout() {
