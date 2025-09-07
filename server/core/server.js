@@ -44,7 +44,7 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(cookieParser()); 
+app.use(cookieParser());
 
 app.use("/api/products", productRoutes);
 app.use("/api/suppliers", supplierRoutes);
@@ -116,6 +116,18 @@ function defineModelRelations() {
     foreignKey: { name: "user_id", allowNull: false },
     onDelete: "CASCADE",
     onUpdate: "CASCADE",
+  });
+
+  // Supplier ↔ User（拥有者）
+  Supplier.belongsTo(User, {
+    foreignKey: { name: "owner_user_id", allowNull: true },
+    as: "owner",
+    onDelete: "SET NULL",
+    onUpdate: "CASCADE",
+  });
+  User.hasOne(Supplier, {
+    foreignKey: { name: "owner_user_id", allowNull: true },
+    as: "supplierProfile",
   });
 
   // Order ↔ OrderItem

@@ -22,6 +22,11 @@ class Supplier extends Model {
         address: {
           type: DataTypes.STRING(255),
         },
+        // 供应商归属的用户（拥有者）,Supplier => User
+        owner_user_id: {
+          type: DataTypes.INTEGER,
+          allowNull: true,
+        },
       },
       {
         sequelize,
