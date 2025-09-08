@@ -25,6 +25,11 @@ export default function Nav({ user }: { user: User | null }) {
             Admin
           </NavLink>
         )}
+        {user?.role === "supplier" && (
+          <NavLink to="/supplier" className="text-gray-600">
+            Supplier
+          </NavLink>
+        )}
         <div className="ml-auto flex items-center gap-3">
           {user ? (
             <Form method="post" action="/logout">

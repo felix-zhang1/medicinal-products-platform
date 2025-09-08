@@ -15,6 +15,19 @@ export default [
       route("login", "routes/login.tsx"),
       route("register", "routes/register.tsx"),
       route("logout", "routes/logout.tsx"),
+
+      route("admin", "routes/admin/_layout.tsx", [
+        route("products", "routes/admin/products.tsx"),
+        route("products/new", "routes/admin/products.new.tsx"),
+        route("products/:id/edit", "routes/admin/products.$id.edit.tsx"),
+        route("orders", "routes/admin/orders.tsx"),
+        // 可继续扩展：categories、suppliers、users ...
+      ]),
+      route("supplier", "routes/supplier/_layout.tsx", [
+        route("products", "routes/supplier/products.tsx"),
+        route("products/new", "routes/supplier/products.new.tsx"),
+        route("products/:id/edit", "routes/supplier/products.$id.edit.tsx"),
+      ]),
     ],
   },
 ] satisfies RouteConfig;
