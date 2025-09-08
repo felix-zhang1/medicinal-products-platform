@@ -151,7 +151,7 @@ function defineModelRelations() {
 async function initializeDatabase() {
   try {
     // initialize database and allow to change table structure automatically
-    await sequelize.sync({ force: true });
+    await sequelize.sync({ alter: true });
     console.log("database sync successfully");
   } catch (error) {
     console.error("database sync failed", error);
