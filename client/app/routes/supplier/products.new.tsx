@@ -3,8 +3,19 @@ import {
   redirect,
   useNavigation,
   type ActionFunctionArgs,
+  type LoaderFunctionArgs,
 } from "react-router-dom";
 import { createServerApi } from "~/lib/net";
+
+export async function loader({ request }: LoaderFunctionArgs) {
+  const api = createServerApi(request);
+  try {
+    await api.get("/suppliers/me"); //  有 supplier 资料就放行
+    return null;
+  } catch {
+    return redirect("/supplier/setup"); // 没有则引导去建档
+  }
+}
 
 export async function action({ request }: ActionFunctionArgs) {
   const api = createServerApi(request);

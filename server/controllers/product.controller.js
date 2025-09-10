@@ -53,10 +53,11 @@ class ProductController {
         "../middlewares/supplierOwnership.js"
       );
       const mySupplier = await getMySupplierOrNull(userId);
-      if (!mySupplier)
-        return res
-          .status(403)
-          .json({ error: "No supplier profile bound to current user" });
+
+      if (!mySupplier) {
+        return res.status(200).json([]);
+      }
+      
       const products = await Product.findAll({
         where: { supplier_id: mySupplier.id },
       });

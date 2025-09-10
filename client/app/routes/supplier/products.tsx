@@ -1,6 +1,7 @@
 import {
   Link,
   Form,
+  redirect,
   useLoaderData,
   useNavigation,
   type LoaderFunctionArgs,
@@ -11,6 +12,11 @@ import type { Product } from "~/lib/types";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const api = createServerApi(request);
+  try {
+    await api.get("/suppliers/me");
+  } catch {
+    return redirect("/supplier/setup");
+  }
   const { data } = await api.get<Product[]>("/products/mine");
   return data;
 }

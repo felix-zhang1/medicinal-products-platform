@@ -27,6 +27,7 @@ export default [
         route("products", "routes/supplier/products.tsx"),
         route("products/new", "routes/supplier/products.new.tsx"),
         route("products/:id/edit", "routes/supplier/products.$id.edit.tsx"),
+        route("setup", "routes/supplier/setup.tsx"),
       ]),
     ],
   },

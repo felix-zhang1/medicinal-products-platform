@@ -27,14 +27,62 @@ class SupplierController {
   // create a supplier
   async createSupplier(req, res) {
     try {
+      // get 前端填写的用户资料(在verifyToken.js中被解析出来了)
+      const requester = req.user;
+
       const { name, description, image_url, address, owner_user_id } = req.body;
 
+      const trimmedName = (name || "").trim();
+      if (!trimmedName) {
+        return res.status(400).json({ error: "Supplier name is required" });
+      }
+
+      let ownerId = null;
+
+      if (requester.role === "supplier") {
+        // 供应商自己建：强制绑定为自己；且最多一条
+        ownerId = requester.id;
+
+        const exists = await Supplier.findOne({
+          where: { owner_user_id: ownerId },
+        });
+        if (exists) {
+          return res.status(409).json({ error: "Supplier already exists" });
+        }
+      } else if (requester.role === "admin") {
+        // 管理员可以为任意用户创建
+        if (!owner_user_id) {
+          return res
+            .status(400)
+            .json({ error: "owner_user_id is required for admin" });
+        }
+        ownerId = Number(owner_user_id);
+
+        // （可选）校验用户是否存在
+        const user = await User.findByPk(ownerId);
+        if (!user) {
+          return res.status(404).json({ error: "Target user not found" });
+        }
+
+        const exists = await Supplier.findOne({
+          where: { owner_user_id: ownerId },
+        });
+        if (exists) {
+          return res
+            .status(409)
+            .json({ error: "Supplier already exists for this user" });
+        }
+      } else {
+        // 其它角色不允许
+        return res.status(403).json({ error: "Forbidden" });
+      }
+
       const newSupplier = await Supplier.create({
-        name,
-        description,
-        image_url,
-        address,
-        owner_user_id: owner_user_id ?? null,
+        name: trimmedName,
+        description: description ?? null,
+        image_url: image_url ?? null,
+        address: address ?? null,
+        owner_user_id: ownerId,
       });
 
       res.status(201).json(newSupplier);
