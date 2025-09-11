@@ -6,6 +6,7 @@ import {
   attachSupplierIdIfSupplier,
   verifySupplierProductOwnership,
 } from "../middlewares/supplierOwnership.js";
+import { upload } from "../middlewares/upload.js";
 
 const router = express.Router();
 
@@ -15,6 +16,7 @@ router.post(
   verifyToken,
   verifyRole(["admin", "supplier"]),
   attachSupplierIdIfSupplier,
+  upload.single("image"),
   ProductController.createProduct
 );
 
@@ -47,6 +49,7 @@ router.put(
   verifyToken,
   verifyRole(["admin", "supplier"]),
   verifySupplierProductOwnership,
+  upload.single("image"),
   ProductController.updateProductById
 );
 

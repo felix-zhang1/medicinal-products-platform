@@ -2,6 +2,7 @@ import express from "express";
 import supplierController from "../controllers/supplier.controller.js";
 import { verifyToken } from "../middlewares/verifyToken.js";
 import { verifyRole } from "../middlewares/verifyRole.js";
+import { upload } from "../middlewares/upload.js";
 
 const router = express.Router();
 
@@ -18,6 +19,7 @@ router.post(
   "/",
   verifyToken,
   verifyRole(["admin", "supplier"]),
+  upload.single("image"),
   supplierController.createSupplier
 );
 
@@ -40,6 +42,7 @@ router.put(
   "/:id",
   verifyToken,
   verifyRole(["admin", "supplier"]),
+  upload.single("image"),
   supplierController.updateSupplierById
 );
 
