@@ -147,12 +147,41 @@ function defineModelRelations() {
   });
 }
 
+/**
+ * Seed initial categories if the table is empty.
+ * - Creates two root categories: "Plant" and "Animal"
+ * - Inserts predefined level-2 subcategories under each root
+ */
+async function seedCategoriesIfEmpty() {
+  const count = await Category.count();
+
+  // if table already has data, skip seeding
+  if (count > 0) return;
+
+  // create level-1 categories
+  const plant = await Category.create({ name: "Plant", level: 1 });
+  const animal = await Category.create({ name: "Animal", level: 1 });
+
+  // Create level-2 subcategories under "Plant"
+  for (const n of ["Leaf", "Rhizome", "Bark", "Flower", "Fruit", "Seed", "Whole herb"]) {
+    await Category.create({ name: n, level: 2, parent_id: plant.id });
+  }
+  // Create level-2 subcategories under "Animal"
+  for (const n of ["Skin", "Horn", "Antler", "Bone", "Shell", "Secretions", "Viscera", "Whole animal"]) {
+    await Category.create({ name: n, level: 2, parent_id: animal.id });
+  }
+
+  console.log("Seeded categories.");
+}
+
 // connect and initialize database (also sync models with database)
 async function initializeDatabase() {
   try {
     // initialize database and allow to change table structure automatically
     await sequelize.sync({ alter: true });
     console.log("database sync successfully");
+    await seedCategoriesIfEmpty();
+    console.log("seed categories data successfully");
   } catch (error) {
     console.error("database sync failed", error);
   }

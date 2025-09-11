@@ -11,6 +11,9 @@ router.post("/", verifyToken, verifyRole("admin"), categoryController.createCate
 // get all
 router.get("/", categoryController.getAllCategories);
 
+// get root category with subcategories
+router.get("/tree", categoryController.getCategoryTree);
+
 // get by id
 router.get("/:id", categoryController.getCategoryById);
 
