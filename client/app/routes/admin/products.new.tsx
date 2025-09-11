@@ -2,14 +2,27 @@ import {
   Form,
   redirect,
   useNavigation,
+  useLoaderData,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from "react-router-dom";
 import { createServerApi } from "~/lib/net";
+import ProductFormFields, {
+  type CatNode,
+} from "~/components/ProductFormFields";
 
-// 进入页面前也校验 admin（靠父布局 loader 已做，这里兜底）
+type Cat = {
+  id: number;
+  name: string;
+  level: number;
+  parent_id: number | null;
+};
+type CatNodeFull = Cat & { subcategories: Array<{ id: number; name: string }> };
+
 export async function loader(_args: LoaderFunctionArgs) {
-  return null;
+  const api = createServerApi(_args.request);
+  const { data: tree } = await api.get<CatNodeFull[]>("/categories/tree");
+  return { tree };
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -30,47 +43,14 @@ export async function action({ request }: ActionFunctionArgs) {
 
 export default function AdminNewProduct() {
   const nav = useNavigation();
+  const { tree } = useLoaderData() as { tree: CatNode[] };
+
   return (
-    <section className="space-y-3">
+    <section className="space-y-3 max-w-lg">
       <h2 className="text-xl font-semibold">New Product</h2>
-      <Form method="post" className="grid gap-3 max-w-lg">
-        <input
-          name="name"
-          placeholder="Name"
-          className="border p-2 rounded"
-          required
-        />
-        <textarea
-          name="description"
-          placeholder="Description"
-          className="border p-2 rounded"
-          rows={3}
-        />
-        <input
-          name="price"
-          type="number"
-          step="0.01"
-          placeholder="Price"
-          className="border p-2 rounded"
-          required
-        />
-        <input
-          name="stock"
-          type="number"
-          placeholder="Stock"
-          className="border p-2 rounded"
-        />
-        <input
-          name="image_url"
-          placeholder="Image URL"
-          className="border p-2 rounded"
-        />
-        <input
-          name="category_id"
-          type="number"
-          placeholder="Category ID"
-          className="border p-2 rounded"
-        />
+      <Form method="post" className="grid gap-3">
+        <ProductFormFields tree={tree} />
+        {/* admin 额外的 supplier_id */}
         <input
           name="supplier_id"
           type="number"

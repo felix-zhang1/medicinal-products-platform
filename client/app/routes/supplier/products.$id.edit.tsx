@@ -7,10 +7,17 @@ import {
   type ActionFunctionArgs,
 } from "react-router-dom";
 import { createServerApi } from "~/lib/net";
-import ProductFormFields, { type CatNode } from "~/components/ProductFormFields";
+import ProductFormFields, {
+  type CatNode,
+} from "~/components/ProductFormFields";
 import type { Product } from "~/lib/types";
 
-type Cat = { id: number; name: string; level: number; parent_id: number | null };
+type Cat = {
+  id: number;
+  name: string;
+  level: number;
+  parent_id: number | null;
+};
 type CatNodeFull = Cat & { subcategories: Array<{ id: number; name: string }> };
 
 export async function loader({
@@ -64,8 +71,13 @@ export default function SupplierEditProduct() {
             image_url: p.image_url ?? "",
             category_id: p.category_id ?? null, // 二级类目
           }}
-          submitting={nav.state === "submitting"}
         />
+        <button
+          className="border rounded px-3 py-2 bg-black text-white"
+          disabled={nav.state === "submitting"}
+        >
+          {nav.state === "submitting" ? "Saving..." : "Save"}
+        </button>
       </Form>
     </section>
   );

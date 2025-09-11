@@ -18,11 +18,9 @@ export type ProductInitial = {
 export default function ProductFormFields({
   tree,
   initial = {},
-  submitting = false,
 }: {
   tree: CatNode[];
   initial?: ProductInitial;
-  submitting?: boolean;
 }) {
   // Get initial parent ID from category_id in tree, or "" if not found
   const initialParentId = useMemo(() => {
@@ -140,13 +138,6 @@ export default function ProductFormFields({
 
       {/* the actual submitted category_id (always a second-level category) */}
       <input type="hidden" name="category_id" value={childId || ""} />
-
-      <button
-        className="border rounded px-3 py-2 bg-black text-white"
-        disabled={submitting}
-      >
-        {submitting ? "Saving..." : "Save"}
-      </button>
     </>
   );
 }

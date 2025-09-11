@@ -64,10 +64,13 @@ export default function SupplierNewProduct() {
     <section className="space-y-3 max-w-lg">
       <h2 className="text-xl font-semibold">New Product</h2>
       <Form method="post" className="grid gap-3" onSubmit={handleSubmit}>
-        <ProductFormFields
-          tree={tree}
-          submitting={nav.state === "submitting"}
-        />
+        <ProductFormFields tree={tree} />
+        <button
+          className="border rounded px-3 py-2 bg-black text-white"
+          disabled={nav.state === "submitting"}
+        >
+          {nav.state === "submitting" ? "Saving..." : "Save"}
+        </button>
       </Form>
     </section>
   );
