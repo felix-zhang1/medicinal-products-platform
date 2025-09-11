@@ -7,15 +7,22 @@ import {
   type ActionFunctionArgs,
 } from "react-router-dom";
 import { createServerApi } from "~/lib/net";
+import ProductFormFields, { type CatNode } from "~/components/ProductFormFields";
 import type { Product } from "~/lib/types";
+
+type Cat = { id: number; name: string; level: number; parent_id: number | null };
+type CatNodeFull = Cat & { subcategories: Array<{ id: number; name: string }> };
 
 export async function loader({
   request,
   params,
 }: LoaderFunctionArgs & { params: { id: string } }) {
   const api = createServerApi(request);
-  const { data } = await api.get<Product>(`/products/${params.id}`);
-  return data;
+  const [{ data: product }, { data: tree }] = await Promise.all([
+    api.get<Product>(`/products/${params.id}`),
+    api.get<CatNodeFull[]>("/categories/tree"),
+  ]);
+  return { product, tree };
 }
 
 export async function action({
@@ -37,55 +44,28 @@ export async function action({
 }
 
 export default function SupplierEditProduct() {
-  const p = useLoaderData() as Product;
+  const { product: p, tree } = useLoaderData() as {
+    product: Product;
+    tree: CatNode[];
+  };
   const nav = useNavigation();
+
   return (
     <section className="space-y-3 max-w-lg">
       <h2 className="text-xl font-semibold">Edit Product #{p.id}</h2>
       <Form method="post" className="grid gap-3">
-        <input
-          name="name"
-          defaultValue={p.name}
-          className="border p-2 rounded"
-          required
+        <ProductFormFields
+          tree={tree}
+          initial={{
+            name: p.name,
+            description: p.description ?? "",
+            price: p.price ?? "",
+            stock: p.stock ?? "",
+            image_url: p.image_url ?? "",
+            category_id: p.category_id ?? null, // 二级类目
+          }}
+          submitting={nav.state === "submitting"}
         />
-        <textarea
-          name="description"
-          defaultValue={p.description}
-          className="border p-2 rounded"
-          rows={3}
-        />
-        <input
-          name="price"
-          type="number"
-          step="0.01"
-          defaultValue={p.price}
-          className="border p-2 rounded"
-          required
-        />
-        <input
-          name="stock"
-          type="number"
-          defaultValue={p.stock ?? 0}
-          className="border p-2 rounded"
-        />
-        <input
-          name="image_url"
-          defaultValue={p.image_url ?? ""}
-          className="border p-2 rounded"
-        />
-        <input
-          name="category_id"
-          type="number"
-          defaultValue={p.category_id ?? ("" as any)}
-          className="border p-2 rounded"
-        />
-        <button
-          className="border rounded px-3 py-2 bg-black text-white"
-          disabled={nav.state === "submitting"}
-        >
-          {nav.state === "submitting" ? "Saving..." : "Save"}
-        </button>
       </Form>
     </section>
   );
