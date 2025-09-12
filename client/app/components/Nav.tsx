@@ -1,48 +1,55 @@
 import { NavLink, Form } from "react-router-dom";
 import type { User } from "~/lib/types";
 
+// common highlight style (with bottom border)
+function navLinkClass({ isActive }: { isActive: boolean }) {
+  return isActive
+    ? "text-blue-600 font-semibold border-b-2 border-blue-600 pb-1"
+    : "text-gray-600 hover:text-blue-500";
+}
+
 export default function Nav({ user }: { user: User | null }) {
   return (
     <header className="border-b bg-white/80 backdrop-blur">
       <nav className="mx-auto max-w-6xl px-4 py-3 flex items-center gap-4">
-        {/* 所有角色都能看到 */}
-        <NavLink to="/" className="font-semibold">
+        {/* for all roles */}
+        <NavLink to="/" end className={navLinkClass}>
           MedProducts
         </NavLink>
-        <NavLink to="/products" className="text-gray-600">
+        <NavLink to="/products" className={navLinkClass}>
           Products
         </NavLink>
 
-        {/* Buyer 专属 */}
+        {/* Buyer only */}
         {user?.role === "buyer" && (
           <>
-            <NavLink to="/cart" className="text-gray-600">
+            <NavLink to="/cart" className={navLinkClass}>
               Cart
             </NavLink>
-            <NavLink to="/favorites" className="text-gray-600">
+            <NavLink to="/favorites" className={navLinkClass}>
               Favorites
             </NavLink>
-            <NavLink to="/orders" className="text-gray-600">
+            <NavLink to="/orders" className={navLinkClass}>
               My Orders
             </NavLink>
           </>
         )}
 
-        {/* Supplier 专属 */}
+        {/* Supplier only */}
         {user?.role === "supplier" && (
-          <NavLink to="/supplier" className="text-gray-600">
+          <NavLink to="/supplier" className={navLinkClass}>
             Supplier
           </NavLink>
         )}
 
-        {/* Admin 专属 */}
+        {/* Admin only */}
         {user?.role === "admin" && (
-          <NavLink to="/admin" className="text-gray-600">
+          <NavLink to="/admin" className={navLinkClass}>
             Admin
           </NavLink>
         )}
 
-        {/* 登录 / 注销按钮 */}
+        {/* Login / Logout */}
         <div className="ml-auto flex items-center gap-3">
           {user ? (
             <Form method="post" action="/logout">
@@ -50,10 +57,10 @@ export default function Nav({ user }: { user: User | null }) {
             </Form>
           ) : (
             <>
-              <NavLink to="/login" className="text-gray-600">
+              <NavLink to="/login" className={navLinkClass}>
                 Login
               </NavLink>
-              <NavLink to="/register" className="text-gray-600">
+              <NavLink to="/register" className={navLinkClass}>
                 Register
               </NavLink>
             </>
