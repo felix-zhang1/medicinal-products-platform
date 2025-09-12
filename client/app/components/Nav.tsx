@@ -5,31 +5,44 @@ export default function Nav({ user }: { user: User | null }) {
   return (
     <header className="border-b bg-white/80 backdrop-blur">
       <nav className="mx-auto max-w-6xl px-4 py-3 flex items-center gap-4">
+        {/* 所有角色都能看到 */}
         <NavLink to="/" className="font-semibold">
           MedProducts
         </NavLink>
         <NavLink to="/products" className="text-gray-600">
           Products
         </NavLink>
-        <NavLink to="/cart" className="text-gray-600">
-          Cart
-        </NavLink>
-        <NavLink to="/favorites" className="text-gray-600">
-          Favorites
-        </NavLink>
-        <NavLink to="/orders" className="text-gray-600">
-          My Orders
-        </NavLink>
-        {user?.role === "admin" && (
-          <NavLink to="/admin" className="text-gray-600">
-            Admin
-          </NavLink>
+
+        {/* Buyer 专属 */}
+        {user?.role === "buyer" && (
+          <>
+            <NavLink to="/cart" className="text-gray-600">
+              Cart
+            </NavLink>
+            <NavLink to="/favorites" className="text-gray-600">
+              Favorites
+            </NavLink>
+            <NavLink to="/orders" className="text-gray-600">
+              My Orders
+            </NavLink>
+          </>
         )}
+
+        {/* Supplier 专属 */}
         {user?.role === "supplier" && (
           <NavLink to="/supplier" className="text-gray-600">
             Supplier
           </NavLink>
         )}
+
+        {/* Admin 专属 */}
+        {user?.role === "admin" && (
+          <NavLink to="/admin" className="text-gray-600">
+            Admin
+          </NavLink>
+        )}
+
+        {/* 登录 / 注销按钮 */}
         <div className="ml-auto flex items-center gap-3">
           {user ? (
             <Form method="post" action="/logout">
