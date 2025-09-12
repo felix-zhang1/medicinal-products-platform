@@ -1,4 +1,8 @@
 import Product from "../models/product.model.js";
+import {
+  saveImageFromBuffer,
+  saveImageFromUrl,
+} from "../services/image.service.js";
 
 class ProductController {
   constructor() {}
@@ -11,17 +15,27 @@ class ProductController {
         description,
         price,
         stock,
-        image_url,
+        image_url: rawImageUrl, // rename 'image_url' from req.body to local variable 'rawImageUrl'
         category_id,
         supplier_id,
       } = req.body;
+
+      let finalImageUrl = null;
+
+      if (req.file) {
+        // 1) 前端上传了文件，优先处理文件
+        finalImageUrl = await saveImageFromBuffer(req.file.buffer, "products");
+      } else if (rawImageUrl) {
+        // 2) 传了一个远程图片 URL，后端拉取后统一处理
+        finalImageUrl = await saveImageFromUrl(rawImageUrl, "products");
+      }
 
       const newProduct = await Product.create({
         name,
         description,
         price,
         stock,
-        image_url,
+        image_url: finalImageUrl, // 统一后的相对路径
         category_id,
         supplier_id,
       });
@@ -57,7 +71,7 @@ class ProductController {
       if (!mySupplier) {
         return res.status(200).json([]);
       }
-      
+
       const products = await Product.findAll({
         where: { supplier_id: mySupplier.id },
       });
@@ -110,26 +124,33 @@ class ProductController {
         description,
         price,
         stock,
-        image_url,
+        image_url: rawImageUrl, // 可选：文本 URL
         category_id,
         supplier_id,
       } = req.body;
-      const [updatedCount] = await Product.update(
-        {
-          name,
-          description,
-          price,
-          stock,
-          image_url,
-          category_id,
-          supplier_id,
-        },
-        { where: { id } }
-      );
 
-      if (updatedCount === 0) {
-        return res.status(404).json({ error: "Product not found" });
+      let finalImageUrl = undefined; // 用 undefined 表示“字段不变”，null 表示“清空”
+      if (req.file) {
+        finalImageUrl = await saveImageFromBuffer(req.file.buffer, "products");
+      } else if (typeof rawImageUrl === "string" && rawImageUrl.trim()) {
+        finalImageUrl = await saveImageFromUrl(rawImageUrl.trim(), "products");
       }
+
+      const payload = {
+        name,
+        description,
+        price,
+        stock,
+        category_id,
+        supplier_id,
+      };
+      if (finalImageUrl !== undefined) {
+        payload.image_url = finalImageUrl;
+      }
+
+      const [updatedCount] = await Product.update(payload, { where: { id } });
+      if (updatedCount === 0)
+        return res.status(404).json({ error: "Product not found" });
 
       res.status(200).json({ message: "Product updated successfully" });
     } catch (error) {

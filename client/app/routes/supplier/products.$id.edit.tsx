@@ -37,16 +37,33 @@ export async function action({
   params,
 }: ActionFunctionArgs & { params: { id: string } }) {
   const api = createServerApi(request);
-  const fd = await request.formData();
-  const body = {
-    name: String(fd.get("name") || ""),
-    description: String(fd.get("description") || ""),
-    price: Number(fd.get("price") || 0),
-    stock: Number(fd.get("stock") || 0),
-    image_url: String(fd.get("image_url") || ""),
-    category_id: fd.get("category_id") ? Number(fd.get("category_id")) : null,
+  const fd = await request.formData(); // extract submitted form data from the request as a FormData object
+
+  // convert value to a valid number string, or fallback to default
+  const toNum = (v: FormDataEntryValue | null, d = 0) => {
+    const n = Number(v);
+    return Number.isFinite(n) ? String(n) : String(d);
   };
-  await api.put(`/products/${params.id}`, body);
+
+  // ensure FormData has a clean single value for the given key
+  const norm = (k: string, v: string) => {
+    if (fd.has(k)) fd.set(k, v);
+    else fd.append(k, v);
+  };
+
+  // normalize form fields
+  norm("name", String(fd.get("name") || ""));
+  norm("description", String(fd.get("description") || ""));
+  norm("price", toNum(fd.get("price"), 0));
+  norm("stock", toNum(fd.get("stock"), 0));
+  norm(
+    "category_id",
+    fd.get("category_id") ? String(fd.get("category_id")) : ""
+  );
+
+  // send multipart/form-data PUT request to update product
+  await api.put(`/products/${params.id}`, fd);
+
   return redirect("/supplier/products");
 }
 
@@ -60,7 +77,7 @@ export default function SupplierEditProduct() {
   return (
     <section className="space-y-3 max-w-lg">
       <h2 className="text-xl font-semibold">Edit Product #{p.id}</h2>
-      <Form method="post" className="grid gap-3">
+      <Form method="post" className="grid gap-3" encType="multipart/form-data">
         <ProductFormFields
           tree={tree}
           initial={{

@@ -86,10 +86,24 @@ export default function ProductFormFields({
         placeholder="Stock"
         className="border p-2 rounded"
       />
+
+      {/* display the original photo */}
+      {initial.image_url && (
+        <div className="mb-2">
+          <p className="text-sm text-gray-600">Current Image:</p>
+          <img
+            src={initial.image_url}
+            alt="Current product"
+            className="w-32 h-32 object-cover border rounded"
+          />
+        </div>
+      )}
+
+      {/* Todo: Add a field for entering an online image URL. */}
       <input
-        name="image_url"
-        defaultValue={initial.image_url ?? ""}
-        placeholder="Image URL"
+        name="image"
+        type="file"
+        accept="image/*"
         className="border p-2 rounded"
       />
 

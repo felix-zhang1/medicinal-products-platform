@@ -3,9 +3,12 @@ import path from "path";
 import sharp from "sharp";
 import { ulid } from "ulid";
 import axios from "axios";
+import { fileURLToPath } from "url";
 
 // root directory for storing uploaded images
-const UPLOAD_ROOT = path.join(process.cwd(), "server", "public", "uploads");
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const UPLOAD_ROOT = path.resolve(__dirname, "../public/uploads");
 
 /**
  * Save an image from a Buffer (Node.js binary container):
