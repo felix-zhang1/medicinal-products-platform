@@ -1,162 +1,48 @@
-import Product from "../models/product.model.js";
-import {
-  saveImageFromBuffer,
-  saveImageFromUrl,
-} from "../services/image.service.js";
+import { ProductService } from "../services/product.service.js";
 
 class ProductController {
-  constructor() {}
-
   // create a product
   async createProduct(req, res) {
-    try {
-      const {
-        name,
-        description,
-        price,
-        stock,
-        image_url: rawImageUrl, // rename 'image_url' from req.body to local variable 'rawImageUrl'
-        category_id,
-        supplier_id,
-      } = req.body;
-
-      let finalImageUrl = null;
-
-      if (req.file) {
-        // 1) 前端上传了文件，优先处理文件
-        finalImageUrl = await saveImageFromBuffer(req.file.buffer, "products");
-      } else if (rawImageUrl) {
-        // 2) 传了一个远程图片 URL，后端拉取后统一处理
-        finalImageUrl = await saveImageFromUrl(rawImageUrl, "products");
-      }
-
-      const newProduct = await Product.create({
-        name,
-        description,
-        price,
-        stock,
-        image_url: finalImageUrl, // 统一后的相对路径
-        category_id,
-        supplier_id,
-      });
-
-      res.status(201).json(newProduct);
-    } catch (error) {
-      console.error("Product creation error:", error);
-      res.status(500).json({ error: "Failed to create product" });
-    }
+    const data = await ProductService.createProduct(req.body, req.file);
+    res.status(201).json(data);
   }
 
   // get all products
   async getAllProducts(req, res) {
-    try {
-      const products = await Product.findAll();
-      res.status(200).json(products);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to fetch products" });
-    }
+    const products = await ProductService.getAllProducts();
+    res.status(200).json(products);
   }
 
   // get my (supplier) products
   async getMyProducts(req, res) {
-    try {
-      const userId = req.user.id;
-      // 通过 supplier.owner_user_id = userId 找到 supplier_id
-      // 为避免重复查询，这里直接在路由用 attachSupplierIdIfSupplier 也可，但这里重新查一遍更清晰
-      const { getMySupplierOrNull } = await import(
-        "../middlewares/supplierOwnership.js"
-      );
-      const mySupplier = await getMySupplierOrNull(userId);
-
-      if (!mySupplier) {
-        return res.status(200).json([]);
-      }
-
-      const products = await Product.findAll({
-        where: { supplier_id: mySupplier.id },
-      });
-      res.status(200).json(products);
-    } catch (error) {
-      console.error("Fetch my products error:", error);
-      res.status(500).json({ error: "Failed to fetch my products" });
-    }
+    const userId = req.user.id;
+    const products = await ProductService.getMyProducts(userId);
+    res.status(200).json(products);
   }
 
   // get a product by id
   async getProductById(req, res) {
-    try {
-      const { id } = req.params;
-      const product = await Product.findByPk(id);
-
-      if (!product) {
-        return res.status(404).json({ error: "Product not found" });
-      }
-
-      res.status(200).json(product);
-    } catch (error) {
-      console.error("Fetch product by id error:", error);
-      res.status(500).json({ error: "Failed to fetch product" });
-    }
+    const { id } = req.params;
+    const product = await ProductService.getProductById(id);
+    res.status(200).json(product);
   }
 
   // delete a product by id
   async deleteProductById(req, res) {
-    try {
-      const { id } = req.params;
-      const deletedCount = await Product.destroy({ where: { id } });
-      if (deletedCount === 0) {
-        return res.status(404).json({ error: "Product not found" });
-      }
-
-      res.status(200).json({ message: "Product deleted successfully" });
-    } catch (error) {
-      console.error("Product deletion error:", error);
-      res.status(500).json({ error: "Failed to delete product" });
-    }
+    const { id } = req.params;
+    const result = await ProductService.deleteProductById(id);
+    res.status(200).json(result);
   }
 
   // update a product by id
   async updateProductById(req, res) {
-    try {
-      const { id } = req.params;
-      const {
-        name,
-        description,
-        price,
-        stock,
-        image_url: rawImageUrl, // 可选：文本 URL
-        category_id,
-        supplier_id,
-      } = req.body;
-
-      let finalImageUrl = undefined; // 用 undefined 表示“字段不变”，null 表示“清空”
-      if (req.file) {
-        finalImageUrl = await saveImageFromBuffer(req.file.buffer, "products");
-      } else if (typeof rawImageUrl === "string" && rawImageUrl.trim()) {
-        finalImageUrl = await saveImageFromUrl(rawImageUrl.trim(), "products");
-      }
-
-      const payload = {
-        name,
-        description,
-        price,
-        stock,
-        category_id,
-        supplier_id,
-      };
-      if (finalImageUrl !== undefined) {
-        payload.image_url = finalImageUrl;
-      }
-
-      const [updatedCount] = await Product.update(payload, { where: { id } });
-      if (updatedCount === 0)
-        return res.status(404).json({ error: "Product not found" });
-
-      res.status(200).json({ message: "Product updated successfully" });
-    } catch (error) {
-      console.error("Product update error:", error);
-      res.status(500).json({ error: "Failed to update product" });
-    }
+    const { id } = req.params;
+    const result = await ProductService.updateProductById(
+      id,
+      req.body,
+      req.file
+    );
+    res.status(200).json(result);
   }
 }
 

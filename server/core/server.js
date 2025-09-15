@@ -5,7 +5,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname  = path.dirname(__filename);
+const __dirname = path.dirname(__filename);
 const UPLOADS_DIR = path.resolve(__dirname, "../public/uploads");
 
 import productRoutes from "../routes/product.route.js";
@@ -64,6 +64,21 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/order-items", orderItemRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/payment", paymentRoutes);
+
+app.use((err, req, res, next) => {
+  const status = Number.isInteger(err.status) ? err.status : 500;
+  const payload = {
+    name: err.name || "Error",
+    message: err.message || "Internal Server Error",
+  };
+  if (err.details) payload.details = err.details;
+
+  // 仅在开发环境传递cause信息
+  if (process.env.NODE_ENV !== "production" && err.cause) {
+    payload.cause = err.cause.message || String(err.cause);
+  }
+  res.status(status).json(payload);
+});
 
 // initialize models
 function initializeModels() {
@@ -171,11 +186,28 @@ async function seedCategoriesIfEmpty() {
   const animal = await Category.create({ name: "Animal", level: 1 });
 
   // Create level-2 subcategories under "Plant"
-  for (const n of ["Leaf", "Rhizome", "Bark", "Flower", "Fruit", "Seed", "Whole herb"]) {
+  for (const n of [
+    "Leaf",
+    "Rhizome",
+    "Bark",
+    "Flower",
+    "Fruit",
+    "Seed",
+    "Whole herb",
+  ]) {
     await Category.create({ name: n, level: 2, parent_id: plant.id });
   }
   // Create level-2 subcategories under "Animal"
-  for (const n of ["Skin", "Horn", "Antler", "Bone", "Shell", "Secretions", "Viscera", "Whole animal"]) {
+  for (const n of [
+    "Skin",
+    "Horn",
+    "Antler",
+    "Bone",
+    "Shell",
+    "Secretions",
+    "Viscera",
+    "Whole animal",
+  ]) {
     await Category.create({ name: n, level: 2, parent_id: animal.id });
   }
 

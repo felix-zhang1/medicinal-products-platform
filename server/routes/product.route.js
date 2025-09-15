@@ -15,8 +15,8 @@ router.post(
   "/",
   verifyToken,
   verifyRole(["admin", "supplier"]),
-  attachSupplierIdIfSupplier,
   upload.single("image"),
+  attachSupplierIdIfSupplier,
   ProductController.createProduct
 );
 
