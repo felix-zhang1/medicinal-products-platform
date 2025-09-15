@@ -182,31 +182,31 @@ async function seedCategoriesIfEmpty() {
   if (count > 0) return;
 
   // create level-1 categories
-  const plant = await Category.create({ name: "Plant", level: 1 });
-  const animal = await Category.create({ name: "Animal", level: 1 });
+  const plant = await Category.create({ name: "plant", level: 1 });
+  const animal = await Category.create({ name: "animal", level: 1 });
 
   // Create level-2 subcategories under "Plant"
   for (const n of [
-    "Leaf",
-    "Rhizome",
-    "Bark",
-    "Flower",
-    "Fruit",
-    "Seed",
-    "Whole herb",
+    "leaf",
+    "rhizome",
+    "bark",
+    "flower",
+    "fruit",
+    "seed",
+    "whole herb",
   ]) {
     await Category.create({ name: n, level: 2, parent_id: plant.id });
   }
   // Create level-2 subcategories under "Animal"
   for (const n of [
-    "Skin",
-    "Horn",
-    "Antler",
-    "Bone",
-    "Shell",
-    "Secretions",
-    "Viscera",
-    "Whole animal",
+    "skin",
+    "horn",
+    "antler",
+    "bone",
+    "shell",
+    "secretions",
+    "viscera",
+    "whole animal",
   ]) {
     await Category.create({ name: n, level: 2, parent_id: animal.id });
   }

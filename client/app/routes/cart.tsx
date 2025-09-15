@@ -3,6 +3,7 @@ import {
   useLoaderData,
   useNavigation,
   redirect,
+  Link,
   type LoaderFunctionArgs,
   type ActionFunctionArgs,
 } from "react-router-dom";
@@ -61,7 +62,20 @@ export async function action({ request }: ActionFunctionArgs) {
     await api.delete(`/cart-items/${id}`);
   } else if (intent === "clear") {
     await api.delete(`/cart-items/me/clear`);
+  } else if (intent === "inc") {
+    // 与 products.$id 中的“Add to Cart”一致：正向叠加数量
+    const productId = Number(fd.get("product_id"));
+    await api.post(`/cart-items`, { product_id: productId, quantity: 1 });
+  } else if (intent === "dec") {
+    const id = String(fd.get("id"));
+    const qty = Number(fd.get("qty")); // 从表单传入当前数量
+    if (qty <= 1) {
+      await api.delete(`/cart-items/${id}`);
+    } else {
+      await api.patch(`/cart-items/${id}`, { quantity: qty - 1 });
+    }
   }
+
   return null;
 }
 
@@ -86,22 +100,73 @@ export default function Cart() {
               className="p-3 flex items-center justify-between gap-3"
             >
               <div className="flex items-center gap-3">
-                <img
-                  src={ci.product?.image_url || "https://placehold.co/80x80"}
-                  className="w-20 h-20 object-cover rounded border"
-                />
+                <Link
+                  to={`/products/${ci.product_id}`}
+                  prefetch="intent"
+                  aria-label={`View product #${ci.product_id}`}
+                >
+                  <img
+                    src={ci.product?.image_url || "https://placehold.co/80x80"}
+                    className="w-20 h-20 object-cover rounded border"
+                  />
+                </Link>
                 <div>
-                  <div className="font-medium">
+                  <Link
+                    to={`/products/${ci.product_id}`}
+                    prefetch="intent"
+                    className="font-medium hover:underline"
+                  >
                     {ci.product?.name || `#${ci.product_id}`}
+                  </Link>
+                  <div className="mt-1 flex items-center gap-2">
+                    {/* 减少 */}
+                    <Form method="post">
+                      <input type="hidden" name="_intent" value="dec" />
+                      <input type="hidden" name="id" value={ci.id} />
+                      <input type="hidden" name="qty" value={ci.quantity} />
+                      <button
+                        className="w-8 h-8 inline-flex items-center justify-center border rounded hover:bg-gray-50 cursor-pointer"
+                        disabled={nav.state === "submitting"}
+                        aria-label="Decrease quantity"
+                        title="Decrease"
+                      >
+                        –
+                      </button>
+                    </Form>
+
+                    {/* 当前数量显示（只读） */}
+                    <div className="w-10 text-center select-none">
+                      {ci.quantity}
+                    </div>
+
+                    {/* 增加 */}
+                    <Form method="post">
+                      <input type="hidden" name="_intent" value="inc" />
+                      <input
+                        type="hidden"
+                        name="product_id"
+                        value={ci.product_id}
+                      />
+                      <button
+                        className="w-8 h-8 inline-flex items-center justify-center border rounded hover:bg-gray-50 cursor-pointer"
+                        disabled={nav.state === "submitting"}
+                        aria-label="Increase quantity"
+                        title="Increase"
+                      >
+                        +
+                      </button>
+                    </Form>
                   </div>
-                  <div className="text-sm text-gray-600">x {ci.quantity}</div>
                 </div>
+
+                <div className="text-sm text-gray-600">x {ci.quantity}</div>
               </div>
+
               <Form method="post">
                 <input type="hidden" name="_intent" value="remove" />
                 <input type="hidden" name="id" value={ci.id} />
                 <button
-                  className="text-red-600 underline"
+                  className="text-red-600 underline cursor-pointer"
                   disabled={nav.state === "submitting"}
                 >
                   {nav.state === "submitting" ? "Removing..." : "Remove"}
@@ -115,7 +180,10 @@ export default function Cart() {
       <div className="flex items-center justify-between">
         <Form method="post">
           <input type="hidden" name="_intent" value="clear" />
-          <button className="underline" disabled={nav.state === "submitting"}>
+          <button
+            className="underline cursor-pointer"
+            disabled={nav.state === "submitting"}
+          >
             Clear Cart
           </button>
         </Form>

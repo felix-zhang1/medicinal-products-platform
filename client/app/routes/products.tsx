@@ -5,7 +5,13 @@ import ProductCard from "~/components/ProductCard";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const api = createServerApi(request);
-  const { data } = await api.get<Product[]>("/products");
+
+  const url = new URL(request.url);
+  const category = url.searchParams.get("category");
+  const endpoint = category
+    ? `/products?category=${encodeURIComponent(category)}`
+    : "/products";
+  const { data } = await api.get<Product[]>(endpoint);
   return data;
 }
 

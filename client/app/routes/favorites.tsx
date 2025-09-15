@@ -3,6 +3,7 @@ import {
   Form,
   useNavigation,
   redirect,
+  Link,
   type LoaderFunctionArgs,
   type ActionFunctionArgs,
 } from "react-router-dom";
@@ -69,18 +70,30 @@ export default function Favorites() {
               key={f.id}
               className="border rounded-xl overflow-hidden bg-white"
             >
-              <img
-                src={f.product?.image_url || "https://placehold.co/600x600"}
-                className="w-full aspect-square object-cover"
-              />
+              <Link
+                to={`/products/${f.product_id}`}
+                prefetch="intent"
+                aria-label={`View product #${f.product_id}`}
+              >
+                <img
+                  src={f.product?.image_url || "https://placehold.co/600x600"}
+                  className="w-full aspect-square object-cover"
+                />
+              </Link>
               <div className="p-3 flex items-center justify-between">
                 <div className="font-medium line-clamp-1">
-                  {f.product?.name || `#${f.product_id}`}
+                  <Link
+                    to={`/products/${f.product_id}`}
+                    className="font-medium line-clamp-1 hover:underline"
+                    prefetch="intent"
+                  >
+                    {f.product?.name || `#${f.product_id}`}
+                  </Link>
                 </div>
                 <Form method="post">
                   <input name="id" type="hidden" value={f.id} />
                   <button
-                    className="text-red-600 underline"
+                    className="text-red-600 underline cursor-pointer"
                     disabled={nav.state === "submitting"}
                   >
                     {nav.state === "submitting" ? "..." : "Remove"}

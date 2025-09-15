@@ -63,6 +63,39 @@ class CartItemController {
     }
   }
 
+  // PATCH: 设置目标数量；<=0 时删除（推荐前端调用）
+  async patchQuantity(req, res) {
+    try {
+      const user_id = req.user.id;
+      const { id } = req.params;
+      const { quantity } = req.body;
+
+      // 校验
+      const q = Number(quantity);
+      if (!Number.isFinite(q)) {
+        return res.status(400).json({ error: "Invalid quantity" });
+      }
+
+      const item = await CartItem.findByPk(id);
+      if (!item || item.user_id !== user_id) {
+        return res.status(404).json({ error: "Cart item not found" });
+      }
+
+      if (q <= 0) {
+        await item.destroy();
+        return res.status(204).end();
+      }
+
+      item.quantity = q;
+      await item.save();
+      // 返回最新实体，便于前端直接使用
+      return res.status(200).json(item);
+    } catch (error) {
+      console.error("Patch cart item quantity error:", error);
+      res.status(500).json({ error: "Failed to patch cart item quantity" });
+    }
+  }
+
   // remove item
   async removeItem(req, res) {
     try {

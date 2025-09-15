@@ -1,4 +1,5 @@
 import Product from "../models/product.model.js";
+import Category from "../models/category.model.js";
 import { Op } from "sequelize";
 
 export const ProductDAO = {
@@ -8,6 +9,28 @@ export const ProductDAO = {
 
   async findAll(where = {}, options = {}) {
     return Product.findAll({ where, ...options });
+  },
+
+  async findAllByCategory(category) {
+    return Product.findAll({
+      include: [
+        {
+          model: Category,
+          // The default alias must align with the value defined in the belongsTo relationship
+          // between the Product and Category models in server.js
+          as: "category",
+          required: true,
+          include: [
+            {
+              model: Category,
+              as: "parent", // Self-referencing alias in the Category model
+              required: true,
+              where: { name: category },
+            },
+          ],
+        },
+      ],
+    });
   },
 
   async findByPk(id, options = {}) {

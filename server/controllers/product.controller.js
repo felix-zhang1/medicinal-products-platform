@@ -9,7 +9,8 @@ class ProductController {
 
   // get all products
   async getAllProducts(req, res) {
-    const products = await ProductService.getAllProducts();
+    const { category } = req.query; // extract query parameter category
+    const products = await ProductService.getAllProducts({ category });
     res.status(200).json(products);
   }
 

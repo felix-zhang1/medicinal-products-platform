@@ -13,6 +13,9 @@ router.get("/me", verifyToken, cartItemController.getMyCart);
 // update
 router.put("/:id", verifyToken, cartItemController.updateItem);
 
+// patch quantity (推荐前端用这个)：设置目标数量，<=0 则删除
+router.patch("/:id", verifyToken, cartItemController.patchQuantity);
+
 // delete one item in cart by id
 router.delete("/:id", verifyToken, cartItemController.removeItem);
 

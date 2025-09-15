@@ -43,8 +43,18 @@ export const ProductService = {
     });
   },
 
-  async getAllProducts() {
-    return ProductDAO.findAll();
+  async getAllProducts({ category } = {}) {
+    if (!category) return ProductDAO.findAll();
+    return this.getProductsByCategory(category);
+  },
+
+  async getProductsByCategory(category) {
+    const key = String(category).toLowerCase();
+    const allowed = new Set(["plant", "animal"]);
+    if (!allowed.has(key)) {
+      throw new BadRequestError("Invalid category");
+    }
+    return ProductDAO.findAllByCategory(key);
   },
 
   async getMyProducts(userId) {
