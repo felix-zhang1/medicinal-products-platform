@@ -106,7 +106,7 @@ export default function Cart() {
                   aria-label={`View product #${ci.product_id}`}
                 >
                   <img
-                    src={ci.product?.image_url || "https://placehold.co/80x80"}
+                    src={ci.product?.image_url}
                     className="w-20 h-20 object-cover rounded border"
                   />
                 </Link>

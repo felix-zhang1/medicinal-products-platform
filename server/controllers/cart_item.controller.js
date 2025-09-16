@@ -6,7 +6,10 @@ class CartItemController {
   async addItem(req, res) {
     try {
       const user_id = req.user.id;
+
+      // if the quantity field does not exist or its value is undefined, then use the default value of 1
       const { product_id, quantity = 1 } = req.body;
+      
       if (!product_id)
         return res.status(400).json({ error: "product_id is required" });
 
