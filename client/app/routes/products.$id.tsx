@@ -9,7 +9,6 @@ import {
 import { createServerApi } from "~/lib/net";
 import type { Product, Review } from "~/lib/types";
 import { isAuthedServer } from "~/lib/auth.server";
-import { isAuthedClient } from "~/lib/auth.client";
 
 export async function loader({
   request,
@@ -22,7 +21,9 @@ export async function loader({
     api.get<Review[]>(`/reviews`),
   ]);
   const reviews = allReviews.filter((r) => String(r.product_id) === String(id));
-  return { product, reviews };
+
+  const authed = isAuthedServer(request);
+  return { product, reviews, authed };
 }
 
 export async function action({
@@ -61,18 +62,19 @@ export async function action({
 }
 
 export default function ProductDetail() {
-  const { product, reviews } = useLoaderData() as {
+  const { product, reviews, authed } = useLoaderData() as {
     product: Product;
     reviews: Review[];
+    authed: Boolean;
   };
   const nav = useNavigation();
 
   return (
     <div className="grid md:grid-cols-2 gap-6">
       <img
-        src={product.image_url || "https://placehold.co/800x800?text=No+Image"}
+        src={product.image_url}
         alt={product.name}
-        className="w-full rounded-lg border"
+        className="w-80 max-w-full rounded-lg border mx-auto"
       />
       <div className="space-y-3">
         <h1 className="text-2xl font-semibold">{product.name}</h1>
@@ -129,7 +131,7 @@ export default function ProductDetail() {
           )}
 
           {/* add new rating and comment (logged-in user only) */}
-          {isAuthedClient() && (
+          {authed && (
             <Form method="post" className="space-y-2">
               <input type="hidden" name="_intent" value="review" />
               <div>
