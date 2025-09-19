@@ -10,6 +10,9 @@ import {
 import { createServerApi } from "~/lib/net";
 import type { Favorite, Product } from "~/lib/types";
 import { isAuthedServer } from "~/lib/auth.server";
+import { usePrefix } from "~/hooks/usePrefix";
+import { useTranslation } from "react-i18next";
+import { useTransition } from "react";
 
 async function hydrateFavorites(
   api: ReturnType<typeof createServerApi>,
@@ -28,11 +31,13 @@ async function hydrateFavorites(
   return list;
 }
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request, params }: LoaderFunctionArgs) {
+  const prefix = params.lng ?? "en";
+
   if (!isAuthedServer(request)) {
     const u = new URL(request.url);
     return redirect(
-      `/login?redirectTo=${encodeURIComponent(u.pathname + u.search)}`
+      `/${prefix}/login?redirectTo=${encodeURIComponent(u.pathname + u.search)}`
     );
   }
   const api = createServerApi(request);
@@ -40,11 +45,13 @@ export async function loader({ request }: LoaderFunctionArgs) {
   return hydrateFavorites(api, data);
 }
 
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({ request, params }: ActionFunctionArgs) {
+  const prefix = params.lng ?? "en";
+
   if (!isAuthedServer(request)) {
     const u = new URL(request.url);
     return redirect(
-      `/login?redirectTo=${encodeURIComponent(u.pathname + u.search)}`
+      `/${prefix}/login?redirectTo=${encodeURIComponent(u.pathname + u.search)}`
     );
   }
   const api = createServerApi(request);
@@ -55,14 +62,17 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export default function Favorites() {
+  const prefix = usePrefix();
+  const { t } = useTranslation();
+
   const list = useLoaderData() as Favorite[];
   const nav = useNavigation();
 
   return (
     <section className="space-y-4">
-      <h1 className="text-2xl font-semibold">My Favorites</h1>
+      <h1 className="text-2xl font-semibold">{t("common:myFavorites")}</h1>
       {list.length === 0 ? (
-        <p className="text-gray-600">No favorites.</p>
+        <p className="text-gray-600">{t("common:noFavorites")}.</p>
       ) : (
         <ul className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {list.map((f) => (
@@ -71,19 +81,19 @@ export default function Favorites() {
               className="border rounded-xl overflow-hidden bg-white"
             >
               <Link
-                to={`/products/${f.product_id}`}
+                to={`${prefix}/products/${f.product_id}`}
                 prefetch="intent"
                 aria-label={`View product #${f.product_id}`}
               >
                 <img
-                  src={f.product?.image_url || "https://placehold.co/600x600"}
+                  src={f.product?.image_url}
                   className="w-full aspect-square object-cover"
                 />
               </Link>
               <div className="p-3 flex items-center justify-between">
                 <div className="font-medium line-clamp-1">
                   <Link
-                    to={`/products/${f.product_id}`}
+                    to={`${prefix}/products/${f.product_id}`}
                     className="font-medium line-clamp-1 hover:underline"
                     prefetch="intent"
                   >
@@ -96,7 +106,9 @@ export default function Favorites() {
                     className="text-red-600 underline cursor-pointer"
                     disabled={nav.state === "submitting"}
                   >
-                    {nav.state === "submitting" ? "..." : "Remove"}
+                    {nav.state === "submitting"
+                      ? t("common:removing")
+                      : t("common:remove")}
                   </button>
                 </Form>
               </div>

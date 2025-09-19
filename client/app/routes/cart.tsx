@@ -10,6 +10,8 @@ import {
 import { createServerApi } from "~/lib/net";
 import type { CartItem, Product } from "~/lib/types";
 import { isAuthedServer } from "~/lib/auth.server";
+import { useTranslation } from "react-i18next";
+import { usePrefix } from "~/hooks/usePrefix";
 
 /** Hydrate cart items with product details and calculate total price. */
 async function hydrateItems(
@@ -33,11 +35,13 @@ async function hydrateItems(
   return { items, total };
 }
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request, params }: LoaderFunctionArgs) {
+  const prefix = params.lng ?? "en";
+
   if (!isAuthedServer(request)) {
     const u = new URL(request.url);
     return redirect(
-      `/login?redirectTo=${encodeURIComponent(u.pathname + u.search)}`
+      `/${prefix}/login?redirectTo=${encodeURIComponent(u.pathname + u.search)}`
     );
   }
   const api = createServerApi(request);
@@ -45,11 +49,13 @@ export async function loader({ request }: LoaderFunctionArgs) {
   return hydrateItems(api, data);
 }
 
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({ request, params }: ActionFunctionArgs) {
+  const prefix = params.lng ?? "en";
+
   if (!isAuthedServer(request)) {
     const u = new URL(request.url);
     return redirect(
-      `/login?redirectTo=${encodeURIComponent(u.pathname + u.search)}`
+      `/${prefix}/login?redirectTo=${encodeURIComponent(u.pathname + u.search)}`
     );
   }
 
@@ -80,6 +86,9 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export default function Cart() {
+  const prefix = usePrefix();
+  const { t } = useTranslation();
+
   const { items, total } = useLoaderData() as {
     items: CartItem[];
     total: number;
@@ -88,10 +97,10 @@ export default function Cart() {
 
   return (
     <section className="space-y-4">
-      <h1 className="text-2xl font-semibold">My Cart</h1>
+      <h1 className="text-2xl font-semibold">{t("common:myCart")}</h1>
 
       {items.length === 0 ? (
-        <p className="text-gray-600">Your cart is empty.</p>
+        <p className="text-gray-600">{t("common:yourCartIsEmpty")}.</p>
       ) : (
         <ul className="divide-y border rounded">
           {items.map((ci) => (
@@ -101,7 +110,7 @@ export default function Cart() {
             >
               <div className="flex items-center gap-3">
                 <Link
-                  to={`/products/${ci.product_id}`}
+                  to={`${prefix}/products/${ci.product_id}`}
                   prefetch="intent"
                   aria-label={`View product #${ci.product_id}`}
                 >
@@ -112,7 +121,7 @@ export default function Cart() {
                 </Link>
                 <div>
                   <Link
-                    to={`/products/${ci.product_id}`}
+                    to={`${prefix}/products/${ci.product_id}`}
                     prefetch="intent"
                     className="font-medium hover:underline"
                   >
@@ -169,7 +178,9 @@ export default function Cart() {
                   className="text-red-600 underline cursor-pointer"
                   disabled={nav.state === "submitting"}
                 >
-                  {nav.state === "submitting" ? "Removing..." : "Remove"}
+                  {nav.state === "submitting"
+                    ? t("common:removing")
+                    : t("common:remove")}
                 </button>
               </Form>
             </li>
@@ -184,11 +195,11 @@ export default function Cart() {
             className="underline cursor-pointer"
             disabled={nav.state === "submitting"}
           >
-            Clear Cart
+            {t("common:clearCart")}
           </button>
         </Form>
         <div className="text-xl font-semibold">
-          Total: NZ${total.toFixed(2)}
+          {`${t("common:total")}: NZ$${total.toFixed(2)}`}
         </div>
       </div>
     </section>

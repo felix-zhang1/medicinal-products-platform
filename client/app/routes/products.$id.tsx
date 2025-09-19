@@ -9,6 +9,8 @@ import {
 import { createServerApi } from "~/lib/net";
 import type { Product, Review } from "~/lib/types";
 import { isAuthedServer } from "~/lib/auth.server";
+import { usePrefix } from "~/hooks/usePrefix";
+import { useTranslation } from "react-i18next";
 
 export async function loader({
   request,
@@ -30,10 +32,12 @@ export async function action({
   request,
   params,
 }: ActionFunctionArgs & { params: { id: string } }) {
+  const prefix = params.lng ?? "en";
+
   if (!isAuthedServer(request)) {
     const u = new URL(request.url);
     return redirect(
-      `/login?redirectTo=${encodeURIComponent(u.pathname + u.search)}`
+      `/${prefix}/login?redirectTo=${encodeURIComponent(u.pathname + u.search)}`
     );
   }
 
@@ -69,6 +73,8 @@ export default function ProductDetail() {
   };
   const nav = useNavigation();
 
+  const { t } = useTranslation();
+
   return (
     <div className="grid md:grid-cols-2 gap-6">
       <img
@@ -96,7 +102,9 @@ export default function ProductDetail() {
             className="border rounded px-3 py-2 bg-black text-white"
             disabled={nav.state === "submitting"}
           >
-            {nav.state === "submitting" ? "Adding..." : "Add to Cart"}
+            {nav.state === "submitting"
+              ? t("common:adding")
+              : t("common:addToCart")}
           </button>
         </Form>
 
@@ -106,20 +114,22 @@ export default function ProductDetail() {
             className="underline text-blue-600"
             disabled={nav.state === "submitting"}
           >
-            {nav.state === "submitting" ? "..." : "Add to Favorites"}
+            {nav.state === "submitting" ? t("common:adding"): t("common:addToFavorites")}
           </button>
         </Form>
 
         <section className="pt-4 space-y-2">
           {/* display existing comment list */}
-          <h2 className="text-lg font-semibold">Reviews</h2>
+          <h2 className="text-lg font-semibold">{t("common:reviews")}</h2>
           {reviews.length === 0 ? (
-            <p className="text-gray-600">No reviews yet.</p>
+            <p className="text-gray-600">{t("common:noReviewYet")}.</p>
           ) : (
             <ul className="space-y-2">
               {reviews.map((r) => (
                 <li key={r.id} className="border rounded p-3">
-                  <div className="font-medium">Rating: {r.rating}/5</div>
+                  <div className="font-medium">
+                    {t("common:rating")}: {r.rating}/5
+                  </div>
                   {r.comment && (
                     <div className="text-gray-700 whitespace-pre-wrap">
                       {r.comment}
@@ -135,7 +145,7 @@ export default function ProductDetail() {
             <Form method="post" className="space-y-2">
               <input type="hidden" name="_intent" value="review" />
               <div>
-                <label className="block text-sm">Rating</label>
+                <label className="block text-sm">{t("common:rating")}</label>
                 <input
                   name="rating"
                   type="number"
@@ -146,7 +156,7 @@ export default function ProductDetail() {
                 />
               </div>
               <div>
-                <label className="block text-sm">Comment</label>
+                <label className="block text-sm">{t("common:comment")}</label>
                 <textarea
                   name="comment"
                   className="border p-2 rounded w-full"
@@ -154,7 +164,7 @@ export default function ProductDetail() {
                 />
               </div>
               <button className="border rounded px-3 py-2">
-                Submit Review
+                {t("common:submitReview")}
               </button>
             </Form>
           )}

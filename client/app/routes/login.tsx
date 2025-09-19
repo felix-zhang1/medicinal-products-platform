@@ -7,6 +7,7 @@ import {
   type LoaderFunctionArgs,
 } from "react-router-dom";
 import { createServerApi } from "~/lib/net";
+import { useTranslation } from "react-i18next";
 
 type LoginResp = { message?: string; token?: string; access_token?: string };
 
@@ -15,11 +16,13 @@ export async function loader(_args: LoaderFunctionArgs) {
   return null; // 或 new Response(null)
 }
 
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({ request, params }: ActionFunctionArgs) {
   const fd = await request.formData();
   const email = String(fd.get("email") || "");
   const password = String(fd.get("password") || "");
   const redirectTo = new URL(request.url).searchParams.get("redirectTo") || "/";
+
+  const prefix = params.lng ?? "en";
 
   try {
     const api = createServerApi(request);
@@ -52,7 +55,7 @@ export async function action({ request }: ActionFunctionArgs) {
       }
     }
 
-    return redirect(redirectTo, { headers: out });
+    return redirect(`/${prefix}${redirectTo}`, { headers: out });
   } catch (e: any) {
     return {
       error: e?.response?.data?.message || e?.message || "Login failed",
@@ -61,24 +64,26 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export default function Login() {
+  const { t } = useTranslation();
+
   const nav = useNavigation();
   const res = useActionData() as { error?: string } | undefined;
   return (
     <div className="max-w-sm mx-auto mt-10">
-      <h1 className="text-xl font-semibold mb-4">Login</h1>
+      <h1 className="text-xl font-semibold mb-4">{t("common:login")}</h1>
       {res?.error && <p className="text-red-600 mb-2">{res.error}</p>}
       <Form method="post" className="space-y-3">
         <input
           name="email"
           type="email"
-          placeholder="Email"
+          placeholder={t("common:email")}
           className="w-full border p-2 rounded"
           required
         />
         <input
           name="password"
           type="password"
-          placeholder="Password"
+          placeholder={t("common:password")}
           className="w-full border p-2 rounded"
           required
         />
@@ -86,7 +91,7 @@ export default function Login() {
           disabled={nav.state === "submitting"}
           className="w-full border p-2 rounded bg-black text-white"
         >
-          {nav.state === "submitting" ? "Logging in..." : "Login"}
+          {nav.state === "submitting" ? t("common:loggingIn") : t("common:login")}
         </button>
       </Form>
     </div>

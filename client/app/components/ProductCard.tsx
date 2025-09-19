@@ -1,14 +1,17 @@
 import { Link } from "react-router-dom";
 import type { Product } from "~/lib/types";
+import { usePrefix } from "~/hooks/usePrefix";
 
 export default function ProductCard({ product }: { product: Product }) {
+  const prefix = usePrefix();
+
   return (
     <Link
-      to={`/products/${product.id}`}
+      to={`${prefix}/products/${product.id}`}
       className="border rounded-xl overflow-hidden bg-white hover:shadow"
     >
       <img
-        src={product.image_url || "https://placehold.co/600x600?text=No+Image"}
+        src={product.image_url}
         alt={product.name}
         className="w-full aspect-square object-cover"
       />

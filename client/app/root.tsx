@@ -9,6 +9,9 @@ import {
 
 import type { Route } from "./+types/root";
 import "./app.css";
+import "./i18n";
+import i18n from "./i18n";
+import { Suspense } from "react";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -25,7 +28,8 @@ export const links: Route.LinksFunction = () => [
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    // set the HTML document language; use current i18n language or fallback to "en"
+    <html lang={i18n.language || "en"}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -33,7 +37,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        {children}
+         {/* Wrap children with Suspense; show "Loading..." while resources are being loaded */}
+        <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
         <ScrollRestoration />
         <Scripts />
       </body>

@@ -1,5 +1,8 @@
 import { NavLink, Form } from "react-router-dom";
 import type { User } from "~/lib/types";
+import LanguageSwitcher from "~/components/LanguageSwitcher";
+import { usePrefix } from "~/hooks/usePrefix";
+import { useTranslation } from "react-i18next";
 
 // common highlight style (with bottom border)
 function navLinkClass({ isActive }: { isActive: boolean }) {
@@ -9,59 +12,65 @@ function navLinkClass({ isActive }: { isActive: boolean }) {
 }
 
 export default function Nav({ user }: { user: User | null }) {
+  const prefix = usePrefix();
+  const { t } = useTranslation(["home", "common"]);
   return (
     <header className="border-b bg-white/80 backdrop-blur">
       <nav className="mx-auto max-w-6xl px-4 py-3 flex items-center gap-4">
         {/* for all roles */}
-        <NavLink to="/" end className={navLinkClass}>
-          MedProducts
+        <NavLink to={`${prefix}/`} end className={navLinkClass}>
+          {t("common:appName")}
         </NavLink>
-        <NavLink to="/products" className={navLinkClass}>
-          Products
+        <NavLink to={`${prefix}/products`} className={navLinkClass}>
+          {t("common:products")}
         </NavLink>
 
         {/* Buyer only */}
         {user?.role === "buyer" && (
           <>
-            <NavLink to="/cart" className={navLinkClass}>
-              Cart
+            <NavLink to={`${prefix}/cart`} className={navLinkClass}>
+              {t("common:cart")}
             </NavLink>
-            <NavLink to="/favorites" className={navLinkClass}>
-              Favorites
+            <NavLink to={`${prefix}/favorites`} className={navLinkClass}>
+              {t("common:favorites")}
             </NavLink>
-            <NavLink to="/orders" className={navLinkClass}>
-              My Orders
+            <NavLink to={`${prefix}/orders`} className={navLinkClass}>
+              {t("common:myOrders")}
             </NavLink>
           </>
         )}
 
         {/* Supplier only */}
         {user?.role === "supplier" && (
-          <NavLink to="/supplier" className={navLinkClass}>
-            Supplier
+          <NavLink to={`${prefix}/supplier`} className={navLinkClass}>
+            {t("common:supplier")}
           </NavLink>
         )}
 
         {/* Admin only */}
         {user?.role === "admin" && (
-          <NavLink to="/admin" className={navLinkClass}>
-            Admin
+          <NavLink to={`${prefix}/admin`} className={navLinkClass}>
+            {t("common:admin")}
           </NavLink>
         )}
 
         {/* Login / Logout */}
         <div className="ml-auto flex items-center gap-3">
+          {/* Language switch */}
+          <LanguageSwitcher />
           {user ? (
-            <Form method="post" action="/logout">
-              <button className="text-gray-600 underline">Logout</button>
+            <Form method="post" action={`${prefix}/logout`}>
+              <button className="text-gray-600 underline">
+                {t("common:logout")}
+              </button>
             </Form>
           ) : (
             <>
-              <NavLink to="/login" className={navLinkClass}>
-                Login
+              <NavLink to={`${prefix}/login`} className={navLinkClass}>
+                {t("common:login")}
               </NavLink>
-              <NavLink to="/register" className={navLinkClass}>
-                Register
+              <NavLink to={`${prefix}/register`} className={navLinkClass}>
+                {t("common:register")}
               </NavLink>
             </>
           )}

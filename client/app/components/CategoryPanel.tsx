@@ -2,6 +2,7 @@ import { useMemo, memo } from "react";
 import { Link } from "react-router-dom";
 import ProductCard from "./ProductCard";
 import type { Product } from "~/lib/types";
+import { useTranslation } from "react-i18next";
 
 /**
  * CategoryPanel component
@@ -39,6 +40,8 @@ const CategoryPanel = memo(function CategoryPanel({
   className = "",
   overlayClassName = "bg-white/70 md:bg-white/60",
 }: CategoryPanelProps) {
+  const { t } = useTranslation();
+
   const bgStyle = useMemo(
     () => ({ backgroundImage: `url(${bgUrl})` }),
     [bgUrl]
@@ -60,7 +63,7 @@ const CategoryPanel = memo(function CategoryPanel({
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-xl font-semibold">{title}</h2>
           <Link to={browseLink} className="underline">
-            Browse all →
+            {t("common:browseAll")} →
           </Link>
         </div>
 
@@ -69,7 +72,7 @@ const CategoryPanel = memo(function CategoryPanel({
             items.map((p) => <ProductCard key={p.id} product={p} />)
           ) : (
             <div className="col-span-2 text-sm text-gray-600">
-              No items available.
+              {t("common:noItemsAvailable")}.
             </div>
           )}
         </div>

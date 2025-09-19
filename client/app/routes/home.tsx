@@ -3,6 +3,8 @@ import { useLoaderData, Link, type LoaderFunctionArgs } from "react-router-dom";
 import { createServerApi } from "~/lib/net";
 import type { Product } from "~/lib/types";
 import CategoryPanel from "~/components/CategoryPanel";
+import { usePrefix } from "~/hooks/usePrefix";
+import { useTranslation } from "react-i18next";
 
 type Cat = {
   id: number;
@@ -49,27 +51,31 @@ export default function Home() {
     animals: Product[];
   };
 
+  const prefix = usePrefix();
+
+  const { t } = useTranslation(["home", "common"]);
+
   // background image for plant and animal product sections
   const PLANT_BG = "/img/plant.jpg";
   const ANIMAL_BG = "/img/animal.jpg";
 
   return (
     <section className="space-y-6">
-      <h1 className="text-2xl font-semibold">Latest Collections</h1>
+      <h1 className="text-2xl font-semibold">{t("home:latestCollections")}</h1>
 
       {/* 容器：小屏上下，md+ 左右 */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <CategoryPanel
           title="Plants"
           bgUrl={PLANT_BG}
-          browseLink="/products?category=plant"
+          browseLink={`${prefix}/products?category=plant`}
           items={plants}
         />
 
         <CategoryPanel
           title="Animals"
           bgUrl={ANIMAL_BG}
-          browseLink="/products?category=animal"
+          browseLink={`${prefix}/products?category=animal`}
           items={animals}
         />
       </div>

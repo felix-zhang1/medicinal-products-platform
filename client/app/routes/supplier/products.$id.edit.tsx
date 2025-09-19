@@ -11,6 +11,7 @@ import ProductFormFields, {
   type CatNode,
 } from "~/components/ProductFormFields";
 import type { Product } from "~/lib/types";
+import { useTranslation } from "react-i18next";
 
 type Cat = {
   id: number;
@@ -36,6 +37,8 @@ export async function action({
   request,
   params,
 }: ActionFunctionArgs & { params: { id: string } }) {
+  const prefix = params.lng ?? "en";
+
   const api = createServerApi(request);
   const fd = await request.formData(); // extract submitted form data from the request as a FormData object
 
@@ -64,10 +67,11 @@ export async function action({
   // send multipart/form-data PUT request to update product
   await api.put(`/products/${params.id}`, fd);
 
-  return redirect("/supplier/products");
+  return redirect(`/${prefix}/supplier/products`);
 }
 
 export default function SupplierEditProduct() {
+  const { t } = useTranslation();
   const { product: p, tree } = useLoaderData() as {
     product: Product;
     tree: CatNode[];
@@ -76,7 +80,7 @@ export default function SupplierEditProduct() {
 
   return (
     <section className="space-y-3 max-w-lg">
-      <h2 className="text-xl font-semibold">Edit Product #{p.id}</h2>
+      <h2 className="text-xl font-semibold">{`${t("common:editProduct")} #${p.id}`}</h2>
       <Form method="post" className="grid gap-3" encType="multipart/form-data">
         <ProductFormFields
           tree={tree}
@@ -93,7 +97,9 @@ export default function SupplierEditProduct() {
           className="border rounded px-3 py-2 bg-black text-white"
           disabled={nav.state === "submitting"}
         >
-          {nav.state === "submitting" ? "Saving..." : "Save"}
+          {nav.state === "submitting"
+            ? `${t("common:saving")}...`
+            : t("common:save")}
         </button>
       </Form>
     </section>

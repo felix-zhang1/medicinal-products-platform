@@ -1,8 +1,13 @@
+// app/routes.ts
 import { type RouteConfig, index, route } from "@react-router/dev/routes";
 
 export default [
+  // "/" -> "/en"
+  index("routes/redirect-to-en.tsx"),
+
+  // 语言父路由（不做正则约束，统一在 loader 里处理）
   {
-    path: "",
+    path: ":lng",
     file: "routes/_layout.tsx",
     children: [
       index("routes/home.tsx"),
@@ -21,7 +26,6 @@ export default [
         route("products/new", "routes/admin/products.new.tsx"),
         route("products/:id/edit", "routes/admin/products.$id.edit.tsx"),
         route("orders", "routes/admin/orders.tsx"),
-        // 可继续扩展：categories、suppliers、users ...
       ]),
       route("supplier", "routes/supplier/_layout.tsx", [
         route("products", "routes/supplier/products.tsx"),

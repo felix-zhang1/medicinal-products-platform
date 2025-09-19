@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export type CatNode = {
   id: number;
@@ -22,6 +23,8 @@ export default function ProductFormFields({
   tree: CatNode[];
   initial?: ProductInitial;
 }) {
+  const { t } = useTranslation();
+
   // Get initial parent ID from category_id in tree, or "" if not found
   const initialParentId = useMemo(() => {
     if (!initial.category_id) return "";
@@ -59,14 +62,14 @@ export default function ProductFormFields({
       <input
         name="name"
         defaultValue={initial.name ?? ""}
-        placeholder="Name"
+        placeholder={t("common:name")}
         className="border p-2 rounded"
         required
       />
       <textarea
         name="description"
         defaultValue={initial.description ?? ""}
-        placeholder="Description"
+        placeholder={t("common:description")}
         className="border p-2 rounded"
         rows={3}
       />
@@ -75,7 +78,7 @@ export default function ProductFormFields({
         type="number"
         step="0.01"
         defaultValue={initial.price ?? ""}
-        placeholder="Price"
+        placeholder={t("common:price")}
         className="border p-2 rounded"
         required
       />
@@ -83,14 +86,14 @@ export default function ProductFormFields({
         name="stock"
         type="number"
         defaultValue={initial.stock ?? ""}
-        placeholder="Stock"
+        placeholder={t("common:stock")}
         className="border p-2 rounded"
       />
 
       {/* display the original photo */}
       {initial.image_url && (
         <div className="mb-2">
-          <p className="text-sm text-gray-600">Current Image:</p>
+          <p className="text-sm text-gray-600">{t("common:currentImage")}:</p>
           <img
             src={initial.image_url}
             alt="Current product"
@@ -109,7 +112,9 @@ export default function ProductFormFields({
 
       {/* Cascading select: Top-level category */}
       <div className="grid gap-2">
-        <label className="text-sm text-gray-600">Top-level Category</label>
+        <label className="text-sm text-gray-600">
+          {t("common:topLevelCategory")}
+        </label>
         <select
           className="border p-2 rounded"
           value={parentId}
@@ -120,7 +125,7 @@ export default function ProductFormFields({
           }}
           required
         >
-          <option value="">Select an option (Plant / Animal)</option>
+          <option value="">{t("common:selectTopCategory")}</option>
           {tree.map((p) => (
             <option key={p.id} value={p.id}>
               {p.name}
@@ -131,7 +136,9 @@ export default function ProductFormFields({
 
       {/* Cascading dropdown: Subcategory */}
       <div className="grid gap-2">
-        <label className="text-sm text-gray-600">Subcategory</label>
+        <label className="text-sm text-gray-600">
+          {t("common:subcategory")}
+        </label>
         <select
           className="border p-2 rounded"
           value={childId}
@@ -141,7 +148,7 @@ export default function ProductFormFields({
           disabled={!parentId}
           required
         >
-          <option value="">Select a specific part</option>
+          <option value="">{t("common:selectSecondCategory")}</option>
           {children.map((c) => (
             <option key={c.id} value={c.id}>
               {c.name}
