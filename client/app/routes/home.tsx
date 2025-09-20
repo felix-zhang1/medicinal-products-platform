@@ -66,14 +66,14 @@ export default function Home() {
       {/* 容器：小屏上下，md+ 左右 */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <CategoryPanel
-          title="Plants"
+          title={t("home:plants")}
           bgUrl={PLANT_BG}
           browseLink={`${prefix}/products?category=plant`}
           items={plants}
         />
 
         <CategoryPanel
-          title="Animals"
+          title={t("home:animals")}
           bgUrl={ANIMAL_BG}
           browseLink={`${prefix}/products?category=animal`}
           items={animals}

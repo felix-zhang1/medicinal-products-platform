@@ -8,6 +8,8 @@ import {
 } from "react-router-dom";
 import { createServerApi } from "~/lib/net";
 import type { Product } from "~/lib/types";
+import { useTranslation } from "react-i18next";
+import { usePrefix } from "~/hooks/usePrefix";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const api = createServerApi(request);
@@ -27,25 +29,28 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export default function AdminProducts() {
+  const { t } = useTranslation();
+  const prefix = usePrefix();
+
   const items = useLoaderData() as Product[];
   const nav = useNavigation();
   return (
     <section className="space-y-3">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold">Products</h2>
-        <Link to="/admin/products/new" className="underline">
-          New
+        <h2 className="text-xl font-semibold">{t("common:products")}</h2>
+        <Link to={`${prefix}/admin/products/new`} className="underline">
+          {t("common:createNewProduct")}
         </Link>
       </div>
       <table className="w-full text-sm border">
         <thead>
           <tr className="bg-gray-50">
-            <th className="p-2 text-left">ID</th>
-            <th className="p-2 text-left">Name</th>
-            <th className="p-2 text-left">Price</th>
-            <th className="p-2 text-left">Stock</th>
-            <th className="p-2 text-left">Supplier</th>
-            <th className="p-2 text-left">Actions</th>
+            <th className="p-2 text-left">{t("common:id")}</th>
+            <th className="p-2 text-left">{t("common:name")}</th>
+            <th className="p-2 text-left">{t("common:price")}</th>
+            <th className="p-2 text-left">{t("common:stock")}</th>
+            <th className="p-2 text-left">{t("common:supplierId")}</th>
+            <th className="p-2 text-left">{t("common:actions")}</th>
           </tr>
         </thead>
         <tbody>
@@ -58,10 +63,10 @@ export default function AdminProducts() {
               <td className="p-2">{p.supplier_id ?? "-"}</td>
               <td className="p-2">
                 <Link
-                  to={`/admin/products/${p.id}/edit`}
+                  to={`${prefix}/admin/products/${p.id}/edit`}
                   className="underline mr-3"
                 >
-                  Edit
+                  {t("common:edit")}
                 </Link>
                 <Form method="post" className="inline">
                   <input type="hidden" name="_intent" value="delete" />
@@ -70,7 +75,9 @@ export default function AdminProducts() {
                     className="underline text-red-600"
                     disabled={nav.state === "submitting"}
                   >
-                    {nav.state === "submitting" ? "..." : "Delete"}
+                    {nav.state === "submitting"
+                      ? t("common:deleting")
+                      : t("common:delete")}
                   </button>
                 </Form>
               </td>

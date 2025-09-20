@@ -43,14 +43,14 @@ export default function Nav({ user }: { user: User | null }) {
         {/* Supplier only */}
         {user?.role === "supplier" && (
           <NavLink to={`${prefix}/supplier`} className={navLinkClass}>
-            {t("common:supplier")}
+            {t("common:supplierPanel")}
           </NavLink>
         )}
 
         {/* Admin only */}
         {user?.role === "admin" && (
           <NavLink to={`${prefix}/admin`} className={navLinkClass}>
-            {t("common:admin")}
+            {t("common:adminPanel")}
           </NavLink>
         )}
 

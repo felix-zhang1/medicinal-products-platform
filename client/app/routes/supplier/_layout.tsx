@@ -32,7 +32,7 @@ export default function SupplierLayout() {
 
   return (
     <div className="space-y-4">
-      <h1 className="text-2xl font-semibold">{t("common:supplierConsole")}</h1>
+      <h1 className="text-2xl font-semibold">{t("common:supplierPanel")}</h1>
       <nav className="flex gap-4 text-sm">
         <Link to={`${prefix}/supplier/products`} className="underline">
           {t("common:myProducts")}

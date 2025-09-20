@@ -7,9 +7,11 @@ import {
   type LoaderFunctionArgs,
 } from "react-router-dom";
 import { createServerApi } from "~/lib/net";
+import { useCallback } from "react";
 import ProductFormFields, {
   type CatNode,
 } from "~/components/ProductFormFields";
+import { useTranslation } from "react-i18next";
 
 type Cat = {
   id: number;
@@ -25,43 +27,56 @@ export async function loader(_args: LoaderFunctionArgs) {
   return { tree };
 }
 
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({ request, params }: ActionFunctionArgs) {
+  const prefix = params.lng ?? "en";
+
   const api = createServerApi(request);
   const fd = await request.formData();
-  const body = {
-    name: String(fd.get("name") || ""),
-    description: String(fd.get("description") || ""),
-    price: Number(fd.get("price") || 0),
-    stock: Number(fd.get("stock") || 0),
-    image_url: String(fd.get("image_url") || ""),
-    category_id: fd.get("category_id") ? Number(fd.get("category_id")) : null,
-    supplier_id: fd.get("supplier_id") ? Number(fd.get("supplier_id")) : null,
-  };
-  await api.post("/products", body);
-  return redirect("/admin/products");
+
+  await api.post("/products", fd);
+  return redirect(`/${prefix}/admin/products`);
 }
 
 export default function AdminNewProduct() {
+  const { t } = useTranslation();
+
   const nav = useNavigation();
   const { tree } = useLoaderData() as { tree: CatNode[] };
 
+  const handleSubmit = useCallback((e: React.FormEvent<HTMLFormElement>) => {
+    const form = e.currentTarget;
+    const sub = (form.elements.namedItem("category_id") as HTMLInputElement)
+      ?.value;
+    if (!sub) {
+      e.preventDefault();
+      alert("Please choose a subcategory");
+    }
+  }, []);
+
   return (
     <section className="space-y-3 max-w-lg">
-      <h2 className="text-xl font-semibold">New Product</h2>
-      <Form method="post" className="grid gap-3">
+      <h2 className="text-xl font-semibold">{t("common:newProduct")}</h2>
+      <Form
+        method="post"
+        encType="multipart/form-data"
+        className="grid gap-3"
+        onSubmit={handleSubmit}
+      >
         <ProductFormFields tree={tree} />
         {/* admin 额外的 supplier_id */}
         <input
           name="supplier_id"
           type="number"
-          placeholder="Supplier ID"
+          placeholder={t("common:supplierId")}
           className="border p-2 rounded"
         />
         <button
           className="border rounded px-3 py-2 bg-black text-white"
           disabled={nav.state === "submitting"}
         >
-          {nav.state === "submitting" ? "Saving..." : "Save"}
+          {nav.state === "submitting"
+            ? `${t("common:saving")}...`
+            : t("common:save")}
         </button>
       </Form>
     </section>

@@ -72,6 +72,7 @@ export async function action({
 
 export default function SupplierEditProduct() {
   const { t } = useTranslation();
+  
   const { product: p, tree } = useLoaderData() as {
     product: Product;
     tree: CatNode[];

@@ -11,6 +11,7 @@ import ProductFormFields, {
   type CatNode,
 } from "~/components/ProductFormFields";
 import type { Product } from "~/lib/types";
+import { useTranslation } from "react-i18next";
 
 type Cat = {
   id: number;
@@ -36,22 +37,40 @@ export async function action({
   request,
   params,
 }: ActionFunctionArgs & { params: { id: string } }) {
+  const prefix = params.lng ?? "en";
+
   const api = createServerApi(request);
   const fd = await request.formData();
-  const body = {
-    name: String(fd.get("name") || ""),
-    description: String(fd.get("description") || ""),
-    price: Number(fd.get("price") || 0),
-    stock: Number(fd.get("stock") || 0),
-    image_url: String(fd.get("image_url") || ""),
-    category_id: fd.get("category_id") ? Number(fd.get("category_id")) : null,
-    supplier_id: fd.get("supplier_id") ? Number(fd.get("supplier_id")) : null,
+
+  // convert value to a valid number string, or fallback to default
+  const toNum = (v: FormDataEntryValue | null, d = 0) => {
+    const n = Number(v);
+    return Number.isFinite(n) ? String(n) : String(d);
   };
-  await api.put(`/products/${params.id}`, body);
-  return redirect("/admin/products");
+
+  // ensure FormData has a clean single value for the given key
+  const norm = (k: string, v: string) => {
+    if (fd.has(k)) fd.set(k, v);
+    else fd.append(k, v);
+  };
+
+  // normalize form fields
+  norm("name", String(fd.get("name") || ""));
+  norm("description", String(fd.get("description") || ""));
+  norm("price", toNum(fd.get("price"), 0));
+  norm("stock", toNum(fd.get("stock"), 0));
+  norm(
+    "category_id",
+    fd.get("category_id") ? String(fd.get("category_id")) : ""
+  );
+
+  await api.put(`/products/${params.id}`, fd);
+  return redirect(`/${prefix}/admin/products`);
 }
 
 export default function AdminEditProduct() {
+  const { t } = useTranslation();
+
   const { product: p, tree } = useLoaderData() as {
     product: Product;
     tree: CatNode[];
@@ -60,7 +79,7 @@ export default function AdminEditProduct() {
 
   return (
     <section className="space-y-3 max-w-lg">
-      <h2 className="text-xl font-semibold">Edit Product #{p.id}</h2>
+      <h2 className="text-xl font-semibold">{`${t("common:editProduct")} #${p.id}`}</h2>
       <Form method="post" className="grid gap-3">
         <ProductFormFields
           tree={tree}
@@ -78,14 +97,16 @@ export default function AdminEditProduct() {
           name="supplier_id"
           type="number"
           defaultValue={p.supplier_id ?? ""}
-          placeholder="Supplier ID"
+          placeholder={t("common:supplierId")}
           className="border p-2 rounded"
         />
         <button
           className="border rounded px-3 py-2 bg-black text-white"
           disabled={nav.state === "submitting"}
         >
-          {nav.state === "submitting" ? "Saving..." : "Save"}
+          {nav.state === "submitting"
+            ? `${t("common:saving")}...`
+            : t("common:save")}
         </button>
       </Form>
     </section>
