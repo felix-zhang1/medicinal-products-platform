@@ -22,8 +22,6 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const password = String(fd.get("password") || "");
   const redirectTo = new URL(request.url).searchParams.get("redirectTo") || "/";
 
-  const prefix = params.lng ?? "en";
-
   try {
     const api = createServerApi(request);
     const resp = await api.post<LoginResp>("/users/login", { email, password });
@@ -55,7 +53,8 @@ export async function action({ request, params }: ActionFunctionArgs) {
       }
     }
 
-    return redirect(`/${prefix}${redirectTo}`, { headers: out });
+    // 不需要拼接en,因为在redirectTo中已经包含了en,这个业务逻辑是在别的会触发重定向到login的页面做的
+    return redirect(redirectTo, { headers: out });
   } catch (e: any) {
     return {
       error: e?.response?.data?.message || e?.message || "Login failed",
@@ -91,7 +90,9 @@ export default function Login() {
           disabled={nav.state === "submitting"}
           className="w-full border p-2 rounded bg-black text-white"
         >
-          {nav.state === "submitting" ? t("common:loggingIn") : t("common:login")}
+          {nav.state === "submitting"
+            ? t("common:loggingIn")
+            : t("common:login")}
         </button>
       </Form>
     </div>

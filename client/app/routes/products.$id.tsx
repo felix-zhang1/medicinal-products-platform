@@ -9,8 +9,8 @@ import {
 import { createServerApi } from "~/lib/net";
 import type { Product, Review } from "~/lib/types";
 import { isAuthedServer } from "~/lib/auth.server";
-import { usePrefix } from "~/hooks/usePrefix";
 import { useTranslation } from "react-i18next";
+import { Button } from "~/components/ui/Button";
 
 export async function loader({
   request,
@@ -18,14 +18,18 @@ export async function loader({
 }: LoaderFunctionArgs & { params: { id: string } }) {
   const api = createServerApi(request);
   const id = params.id;
-  const [{ data: product }, { data: allReviews }] = await Promise.all([
+  const [{ data: product }, { data: allReviews }, me] = await Promise.all([
     api.get<Product>(`/products/${id}`),
     api.get<Review[]>(`/reviews`),
+
+    // 获取用户身份,即使没有,也不影响promise.all函数的执行,从而不影响页面的渲染
+    api.get<{ role: string } | null>("/users/me").catch(() => null),
   ]);
   const reviews = allReviews.filter((r) => String(r.product_id) === String(id));
 
+  const role = me?.data?.role ?? null;
   const authed = isAuthedServer(request);
-  return { product, reviews, authed };
+  return { product, reviews, authed, role };
 }
 
 export async function action({
@@ -66,14 +70,18 @@ export async function action({
 }
 
 export default function ProductDetail() {
-  const { product, reviews, authed } = useLoaderData() as {
+  const { product, reviews, authed, role } = useLoaderData() as {
     product: Product;
     reviews: Review[];
     authed: Boolean;
+    role: string | null;
   };
   const nav = useNavigation();
 
   const { t } = useTranslation();
+
+  // 为了禁止supplier和admin角色使用"add to cart"按钮及功能(只有在"已登录"和"supplier或者admin"角色时,isForbidden才为true)
+  const isForbidden = authed && (role === "supplier" || role === "admin");
 
   return (
     <div className="grid md:grid-cols-2 gap-6">
@@ -89,37 +97,65 @@ export default function ProductDetail() {
         )}
         <p className="text-xl font-bold">NZ${product.price.toFixed(2)}</p>
 
-        <Form method="post" className="flex items-center gap-2">
+        {/* Add to Cart：只给 buyer 显示 */}
+        <Form
+          method="post"
+          className="flex items-center gap-2"
+          onSubmit={(e) => {
+            if (isForbidden) e.preventDefault(); // 添加onSubimit事件,实现双保险
+          }}
+        >
           <input type="hidden" name="_intent" value="add-to-cart" />
           <input
             name="qty"
             type="number"
             min={1}
             defaultValue={1}
-            className="w-24 border p-2 rounded"
+            className="w-24 border p-2 rounded
+               disabled:bg-gray-100 disabled:text-gray-400
+               disabled:border-gray-300 disabled:cursor-not-allowed"
+            disabled={isForbidden}
+            title={isForbidden ? t("common:onlyBuyersCanAddToCart") : ""}
+            aria-disabled={isForbidden}
           />
-          <button
-            className="border rounded px-3 py-2 bg-black text-white"
-            disabled={nav.state === "submitting"}
+          <Button
+            type="submit"
+            loading={nav.state === "submitting"}
+            forbidden={isForbidden}
+            titleWhenForbidden={t("common:onlyBuyersCanAddToCart")}
           >
-            {nav.state === "submitting"
-              ? t("common:adding")
-              : t("common:addToCart")}
-          </button>
+            {isForbidden
+              ? t("common:notAllowedToBuy")
+              : nav.state === "submitting"
+                ? t("common:adding")
+                : t("common:addToCart")}
+          </Button>
         </Form>
 
-        <Form method="post">
+        {/* Add to Favorites */}
+        <Form
+          method="post"
+          onSubmit={(e) => {
+            if (isForbidden) e.preventDefault();
+          }}
+        >
           <input type="hidden" name="_intent" value="favorite" />
-          <button
-            className="underline text-blue-600"
-            disabled={nav.state === "submitting"}
+          <Button
+            variant="link"
+            loading={nav.state === "submitting"}
+            forbidden={isForbidden}
+            titleWhenForbidden={t("common:onlyBuyersCanAddToFavorites")}
           >
-            {nav.state === "submitting" ? t("common:adding"): t("common:addToFavorites")}
-          </button>
+            {isForbidden
+              ? t("common:notAllowedToFavorites")
+              : nav.state === "submitting"
+                ? t("common:adding")
+                : t("common:addToFavorites")}
+          </Button>
         </Form>
 
+        {/* display existing comment list */}
         <section className="pt-4 space-y-2">
-          {/* display existing comment list */}
           <h2 className="text-lg font-semibold">{t("common:reviews")}</h2>
           {reviews.length === 0 ? (
             <p className="text-gray-600">{t("common:noReviewYet")}.</p>
@@ -142,8 +178,15 @@ export default function ProductDetail() {
 
           {/* add new rating and comment (logged-in user only) */}
           {authed && (
-            <Form method="post" className="space-y-2">
+            <Form
+              method="post"
+              className="space-y-2"
+              onSubmit={(e) => {
+                if (isForbidden) e.preventDefault();
+              }}
+            >
               <input type="hidden" name="_intent" value="review" />
+
               <div>
                 <label className="block text-sm">{t("common:rating")}</label>
                 <input
@@ -152,20 +195,39 @@ export default function ProductDetail() {
                   min={1}
                   max={5}
                   defaultValue={5}
-                  className="border p-2 rounded w-24"
+                  className="border p-2 rounded w-24
+                   disabled:bg-gray-100 disabled:text-gray-400
+                   disabled:border-gray-300 disabled:cursor-not-allowed"
+                  disabled={isForbidden}
+                  title={isForbidden ? t("common:onlyBuyersCanRating") : ""}
+                  aria-disabled={isForbidden}
                 />
               </div>
+
               <div>
                 <label className="block text-sm">{t("common:comment")}</label>
                 <textarea
                   name="comment"
-                  className="border p-2 rounded w-full"
+                  className="border p-2 rounded w-full
+                   disabled:bg-gray-100 disabled:text-gray-400
+                   disabled:border-gray-300 disabled:cursor-not-allowed"
                   rows={3}
+                  disabled={isForbidden}
+                  title={isForbidden ? t("common:onlyBuyersCanReview") : ""}
+                  aria-disabled={isForbidden}
                 />
               </div>
-              <button className="border rounded px-3 py-2">
-                {t("common:submitReview")}
-              </button>
+
+              <Button
+                type="submit"
+                loading={false}
+                forbidden={isForbidden}
+                titleWhenForbidden={t("common:onlyBuyersCanReview")}
+              >
+                {isForbidden
+                  ? t("common:notAllowedToReview")
+                  : t("common:submitReview")}
+              </Button>
             </Form>
           )}
         </section>

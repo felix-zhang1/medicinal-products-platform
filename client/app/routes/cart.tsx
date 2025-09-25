@@ -80,6 +80,9 @@ export async function action({ request, params }: ActionFunctionArgs) {
     } else {
       await api.patch(`/cart-items/${id}`, { quantity: qty - 1 });
     }
+  } else if (intent === "checkout") {
+    const { data } = await api.post<{ id: number }>("/orders", {}); // 后端按购物车生成订单
+    return redirect(`/${prefix}/orders/${data.id}`);
   }
 
   return null;
@@ -201,6 +204,20 @@ export default function Cart() {
         <div className="text-xl font-semibold">
           {`${t("common:total")}: NZ$${total.toFixed(2)}`}
         </div>
+
+        {/* 去结算 */}
+        <Form method="post">
+          <input type="hidden" name="_intent" value="checkout" />
+
+          <button
+            className="px-4 py-2 rounded border font-medium hover:bg-gray-50 cursor-pointer"
+            disabled={nav.state === "submitting" || items.length === 0}
+            aria-label="Proceed to checkout"
+            title="Checkout"
+          >
+            {t("common:checkout") /* 没有这个 key 就先写死 'Checkout' */}
+          </button>
+        </Form>
       </div>
     </section>
   );

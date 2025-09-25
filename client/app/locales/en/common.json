@@ -67,5 +67,13 @@
   "subcategory": "Subcategory",
   "selectSecondCategory": "Select a specific part",
   "browseAll": "Browse all",
-  "noItemsAvailable": "No items available"
+  "noItemsAvailable": "No items available",
+  "checkout": "Checkout",
+  "notAllowedToBuy": "Not Allowed to Buy",
+  "onlyBuyersCanAddToCart": "Only Buyers Can Add to Cart",
+  "onlyBuyersCanReview": "Only Buyers Can Review",
+  "onlyBuyersCanRating": "Only Buyers Can Rating",
+  "onlyBuyersCanAddToFavorites": "Only Buyers Can Add to Favorites",
+  "notAllowedToFavorites": "Not Allowed to Favorites",
+  "notAllowedToReview": "Not Allowed to Review"
 }

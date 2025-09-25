@@ -20,6 +20,7 @@ export default [
       route("login", "routes/login.tsx"),
       route("register", "routes/register.tsx"),
       route("logout", "routes/logout.tsx"),
+      route("payments/:id", "routes/payments.$id.tsx"),
 
       route("admin", "routes/admin/_layout.tsx", [
         route("products", "routes/admin/products.tsx"),

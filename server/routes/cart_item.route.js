@@ -1,11 +1,12 @@
 import express from "express";
 import cartItemController from "../controllers/cart_item.controller.js";
 import { verifyToken } from "../middlewares/verifyToken.js";
+import { verifyRole } from "../middlewares/verifyRole.js";
 
 const router = express.Router();
 
 // add item or increase quantity
-router.post("/", verifyToken, cartItemController.addItem);
+router.post("/", verifyToken, verifyRole("buyer"), cartItemController.addItem);
 
 // get cart's information
 router.get("/me", verifyToken, cartItemController.getMyCart);

@@ -3,8 +3,8 @@ import Order from "../models/order.model.js";
 // verify whether the user has permission to access orders
 export async function verifyOrderOwnership(req, res, next) {
   try {
-    const { orderId } = req.params;
-    const order = await Order.findByPk(orderId);
+    const { id } = req.params;
+    const order = await Order.findByPk(id);
     if (!order) return res.status(404).json({ error: "Order not found" });
 
     // verify users' role, and allow "Admin" role to pass

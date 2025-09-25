@@ -67,5 +67,13 @@
   "subcategory": "子类",
   "selectSecondCategory": "选择具体的部位",
   "browseAll": "浏览全部产品",
-  "noItemsAvailable": "没有产品"
+  "noItemsAvailable": "没有产品",
+  "checkout": "结账",
+  "notAllowedToBuy": "不允许购买",
+  "onlyBuyersCanAddToCart": "只有买家能够添加到购物车",
+  "onlyBuyersCanReview": "只有买家可以评论",
+  "onlyBuyersCanRating": "只有买家可以评分",
+  "onlyBuyersCanAddToFavorites": "只有买家能够收藏",
+  "notAllowedToFavorites": "不允许添加到收藏",
+  "notAllowedToReview": "不允许评论"
 }

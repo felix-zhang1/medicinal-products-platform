@@ -18,7 +18,11 @@ import orderRoutes from "../routes/order.route.js";
 import orderItemRoutes from "../routes/order_item.route.js";
 import reviewRoutes from "../routes/review.route.js";
 
+// 仅把 create-intent 放在 router 里
 import paymentRoutes from "../routes/payment.route.js";
+
+// 直接引用 controller 以便单独挂 webhook
+import paymentController from "../controllers/payment.controller.js";
 
 import Product from "../models/product.model.js";
 import Supplier from "../models/supplier.model.js";
@@ -47,6 +51,13 @@ app.use(
   })
 );
 
+// 在任何 JSON 解析中间件之前挂载 Stripe Webhook（必须用 raw）
+app.post(
+  "/api/payment/webhook",
+  express.raw({ type: "application/json" }),
+  paymentController.stripeWebhook
+);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -63,6 +74,8 @@ app.use("/api/favorites", favoriteRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/order-items", orderItemRoutes);
 app.use("/api/reviews", reviewRoutes);
+
+// 仅包含 create-intent 的路由挂这里
 app.use("/api/payment", paymentRoutes);
 
 app.use((err, req, res, next) => {
