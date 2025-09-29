@@ -18,6 +18,7 @@
   "orders": "Orders",
   "myOrders": "My Orders",
   "noOrders": "No orders",
+  "orderId": "Order ID",
   "supplierPanel": "Supplier Panel",
   "supplierId": "Supplier Id",
   "adminPanel": "Admin Panel",
@@ -29,6 +30,7 @@
   "supplierRole": "Supplier",
   "adminRole": "Admin",
   "username": "Username",
+  "userId": "User ID",
   "email": "Email",
   "password": "Password",
   "submitting": "Submitting",
@@ -44,6 +46,7 @@
   "remove": "Remove",
   "removing": "Removing",
   "total": "Total",
+  "totalPrice": "Total Price",
   "view": "View",
   "status": "Status",
   "createYourSupplierProfile": "Create Your Supplier Profile",
@@ -75,5 +78,11 @@
   "onlyBuyersCanRating": "Only Buyers Can Rating",
   "onlyBuyersCanAddToFavorites": "Only Buyers Can Add to Favorites",
   "notAllowedToFavorites": "Not Allowed to Favorites",
-  "notAllowedToReview": "Not Allowed to Review"
+  "notAllowedToReview": "Not Allowed to Review",
+  "updateOrderStatus": "Update Order Status",
+  "pending": "Pending",
+  "paid": "Paid",
+  "shipped": "Shipped",
+  "completed": "Completed",
+  "cancelled": "Cancelled"
 }

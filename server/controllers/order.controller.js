@@ -109,6 +109,9 @@ class OrderController {
       const { id } = req.params;
       const { total_price, status } = req.body;
       const [count] = await Order.update(
+
+        // preset two fields, total_price and status, as changeable
+        // now, only status field can be modified by admin role
         { total_price, status },
         { where: { id } }
       );

@@ -7,7 +7,9 @@ import {
 } from "react-router-dom";
 import { createServerApi } from "~/lib/net";
 import type { Order } from "~/lib/types";
+import { useTranslation} from "react-i18next";
 
+// get all of the user's orders data
 export async function loader({ request }: LoaderFunctionArgs) {
   const api = createServerApi(request);
   const { data } = await api.get<Order[]>("/orders");
@@ -24,19 +26,21 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export default function AdminOrders() {
+  const {t} = useTranslation();
+
   const list = useLoaderData() as Order[];
   const nav = useNavigation();
   return (
     <section className="space-y-3">
-      <h2 className="text-xl font-semibold">Orders</h2>
+      <h2 className="text-xl font-semibold">{t("common:orders")}</h2>
       <table className="w-full text-sm border">
         <thead>
           <tr className="bg-gray-50">
-            <th className="p-2 text-left">ID</th>
-            <th className="p-2 text-left">User</th>
-            <th className="p-2 text-left">Total</th>
-            <th className="p-2 text-left">Status</th>
-            <th className="p-2 text-left">Update</th>
+            <th className="p-2 text-left">{t("common:orderId")}</th>
+            <th className="p-2 text-left">{t("common:userId")}</th>
+            <th className="p-2 text-left">{t("common:totalPrice")}</th>
+            <th className="p-2 text-left">{t("common:status")}</th>
+            <th className="p-2 text-left">{t("common:updateOrderStatus")}</th>
           </tr>
         </thead>
         <tbody>
@@ -54,17 +58,17 @@ export default function AdminOrders() {
                     defaultValue={o.status}
                     className="border p-1 rounded"
                   >
-                    <option value="pending">pending</option>
-                    <option value="paid">paid</option>
-                    <option value="shipped">shipped</option>
-                    <option value="completed">completed</option>
-                    <option value="cancelled">cancelled</option>
+                    <option value="pending">{t("common:pending")}</option>
+                    <option value="paid">{t("common:paid")}</option>
+                    <option value="shipped">{t("common:shipped")}</option>
+                    <option value="completed">{t("common:completed")}</option>
+                    <option value="cancelled">{t("common:cancelled")}</option>
                   </select>
                   <button
                     className="underline"
                     disabled={nav.state === "submitting"}
                   >
-                    {nav.state === "submitting" ? "..." : "Save"}
+                    {nav.state === "submitting" ? t("common:submitting"): t("common:save")}
                   </button>
                 </Form>
               </td>
