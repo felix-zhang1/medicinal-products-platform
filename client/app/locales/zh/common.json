@@ -1,6 +1,10 @@
 {
   "appName": "药用产品",
-  "language": { "label": "语言" },
+  "language": {
+    "label": "Language",
+    "english": "英文",
+    "chinese": "中文"
+  },
   "products": "产品",
   "myProducts": "我的产品",
   "allProducts": "所有产品",

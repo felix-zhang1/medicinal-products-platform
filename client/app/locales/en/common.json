@@ -1,6 +1,10 @@
 {
   "appName": "MedProducts",
-  "language": { "label": "Language" },
+  "language": {
+    "label": "Language",
+    "english": "English",
+    "chinese": "Chinese"
+  },
   "products": "Products",
   "myProducts": "My Products",
   "allProducts": "All Products",

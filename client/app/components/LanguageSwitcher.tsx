@@ -1,39 +1,60 @@
-import { useParams, useLocation, Link } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useMemo, useCallback } from "react";
+import { usePrefix } from "~/hooks/usePrefix";
 
-/**
- * LanguageSwitcher component
- *
- * Purpose: Toggle between English and Chinese URL prefixes (/en or /zh),
- * display a language switch button, and keep query params and hash.
- */
 export default function LanguageSwitcher() {
-  const { t } = useTranslation("common"); // i18n translation function
-  const { lng } = useParams(); // get language code from route params
-  const location = useLocation(); // current pathname, search, and hash
+  const { t } = useTranslation("common");
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  // current language, default to "en" if not defined
-  const current = lng === "zh" || lng === "en" ? lng : "en";
+  // extract /en or /zh from the path of the current URL
+  const prefix = usePrefix();
+  // get "en" or "zh"
+  const current = prefix.replace("/", "");
 
-  // the other language
-  const other = current === "zh" ? "en" : "zh";
+  // build target URL when switching language
+  // 1. replace the first path segment (/en or /zh) with the new language
+  // 2. preserve query string (?...) and hash (#...)
+  const buildTo = useCallback(
+    (newLng: "en" | "zh") => {
+      const path = location.pathname.replace(/^\/(en|zh)/, `/${newLng}`);
+      return path + location.search + location.hash;
+    },
+    [location]
+  );
 
-  // target URL: replace the prefix with the other language,
-  // while keeping ?query and #hash
-  const to =
-    location.pathname.replace(/^\/(en|zh)/, `/${other}`) +
-    location.search +
-    location.hash;
+  // provide two options for the dropdown
+  const options = useMemo(
+    () => [
+      { value: "en", label: t("language.english") },
+      { value: "zh", label: t("language.chinese") },
+    ],
+    [t]
+  );
+
+  // build a new path when switching language
+  const onChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const nextLng = e.target.value as "en" | "zh";
+    if (nextLng !== current) navigate(buildTo(nextLng));
+  };
 
   return (
-    <div className="flex items-center gap-2 text-sm">
-      {/* display "Language" label */}
-      <span>{t("language.label")}</span>
-
-      {/* language switch link, navigates to the other language version */}
-      <Link className="underline" to={to} prefetch="intent">
-        {other.toUpperCase()}
-      </Link>
-    </div>
+    <label className="inline-flex items-center gap-2 text-sm">
+      <div className="relative">
+        <select
+          className="border rounded-md py-1.5 pl-3 pr-8 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+          value={current}
+          onChange={onChange}
+          aria-label={t("language.label", "Language")}
+        >
+          {options.map((opt) => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
+        </select>
+      </div>
+    </label>
   );
 }

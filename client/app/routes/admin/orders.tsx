@@ -16,6 +16,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   return data;
 }
 
+// update the order's status
 export async function action({ request }: ActionFunctionArgs) {
   const api = createServerApi(request);
   const fd = await request.formData();
