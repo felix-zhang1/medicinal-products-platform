@@ -9,6 +9,7 @@
     "typecheck": "react-router typegen && tsc"
   },
   "dependencies": {
+    "@googlemaps/js-api-loader": "^2.0.1",
     "@react-router/node": "^7.7.1",
     "@react-router/serve": "^7.7.1",
     "@stripe/react-stripe-js": "^4.0.2",
@@ -27,6 +28,7 @@
   "devDependencies": {
     "@react-router/dev": "^7.7.1",
     "@tailwindcss/vite": "^4.1.4",
+    "@types/google.maps": "^3.58.1",
     "@types/node": "^20",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",

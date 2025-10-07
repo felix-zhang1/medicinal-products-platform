@@ -1,6 +1,9 @@
 import Supplier from "../models/supplier.model.js";
 import User from "../models/user.model.js";
-import { saveImageFromBuffer, saveImageFromUrl } from "../services/image.service.js";
+import {
+  saveImageFromBuffer,
+  saveImageFromUrl,
+} from "../services/image.service.js";
 
 class SupplierController {
   constructor() {}
@@ -32,7 +35,18 @@ class SupplierController {
       // get 前端填写的用户资料(在verifyToken.js中被解析出来了)
       const requester = req.user;
 
-      const { name, description, image_url, address, owner_user_id } = req.body;
+      const {
+        name,
+        description,
+        image_url,
+        address, // 原始用户输入
+        place_id,
+        formatted_address,
+        lat,
+        lng,
+        address_components, // JSON 字符串
+        owner_user_id,
+      } = req.body;
 
       const trimmedName = (name || "").trim();
       if (!trimmedName) {
@@ -79,11 +93,42 @@ class SupplierController {
         return res.status(403).json({ error: "Forbidden" });
       }
 
+      // 对经纬度数据进行校验
+      let latNum = null,
+        lngNum = null,
+        comps = null;
+      if (lat !== undefined && lat !== null && String(lat).trim() !== "") {
+        latNum = Number(lat);
+        if (Number.isNaN(latNum) || latNum < -90 || latNum > 90) {
+          return res.status(400).json({ error: "Invalid latitude" });
+        }
+      }
+      if (lng !== undefined && lng !== null && String(lng).trim() !== "") {
+        lngNum = Number(lng);
+        if (Number.isNaN(lngNum) || lngNum < -180 || lngNum > 180) {
+          return res.status(400).json({ error: "Invalid longitude" });
+        }
+      }
+      if (address_components) {
+        try {
+          comps = JSON.parse(address_components);
+        } catch {
+          return res
+            .status(400)
+            .json({ error: "address_components must be JSON" });
+        }
+      }
+
       const newSupplier = await Supplier.create({
         name: trimmedName,
         description: description ?? null,
         image_url: image_url ?? null,
         address: address ?? null,
+        place_id: place_id ?? null,
+        formatted_address: formatted_address ?? null,
+        lat: latNum,
+        lng: lngNum,
+        address_components: comps ? JSON.stringify(comps) : null,
         owner_user_id: ownerId,
       });
 
@@ -141,11 +186,56 @@ class SupplierController {
   async updateSupplierById(req, res) {
     try {
       const { id } = req.params;
-      const { name, description, image_url, address } = req.body;
-      const [updatedCount] = await Supplier.update(
-        { name, description, image_url, address },
-        { where: { id } }
-      );
+      const {
+        name,
+        description,
+        image_url,
+        address,
+        place_id,
+        formatted_address,
+        lat,
+        lng,
+        address_components,
+      } = req.body;
+
+      let payload = {
+        name,
+        description,
+        image_url,
+        address,
+        place_id,
+        formatted_address,
+      };
+      if (lat !== undefined && String(lat).trim() !== "") {
+        const v = Number(lat);
+        if (Number.isNaN(v) || v < -90 || v > 90) {
+          return res.status(400).json({ error: "Invalid latitude" });
+        }
+        payload.lat = v;
+      }
+      if (lng !== undefined && String(lng).trim() !== "") {
+        const v = Number(lng);
+        if (Number.isNaN(v) || v < -180 || v > 180) {
+          return res.status(400).json({ error: "Invalid longitude" });
+        }
+        payload.lng = v;
+      }
+      if (address_components !== undefined) {
+        if (address_components === null || address_components === "") {
+          payload.address_components = null;
+        } else {
+          try {
+            JSON.parse(address_components);
+            payload.address_components = address_components;
+          } catch {
+            return res
+              .status(400)
+              .json({ error: "address_components must be JSON" });
+          }
+        }
+      }
+
+      const [updatedCount] = await Supplier.update(payload, { where: { id } });
 
       if (updatedCount === 0) {
         res.status(404).json({ error: "Supplier not found" });

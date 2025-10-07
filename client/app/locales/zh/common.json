@@ -30,6 +30,7 @@
   "login": "登录",
   "loggingIn": "正在登录",
   "register": "注册",
+  "role": "角色",
   "buyerRole": "买家",
   "supplierRole": "供货商",
   "adminRole": "管理员",
@@ -88,5 +89,10 @@
   "paid": "已支付",
   "shipped": "已发货",
   "completed": "已完成",
-  "cancelled": "已取消"
+  "cancelled": "已取消",
+  "myProfile": "用户信息",
+  "overview": "概况",
+  "locationPreview": "位置预览",
+  "noLocationSet": "未设置位置",
+  "userSecuritySettings": "用户安全设置"
 }

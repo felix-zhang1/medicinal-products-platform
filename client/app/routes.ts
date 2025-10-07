@@ -21,12 +21,14 @@ export default [
       route("register", "routes/register.tsx"),
       route("logout", "routes/logout.tsx"),
       route("payments/:id", "routes/payments.$id.tsx"),
+      route("account", "routes/account.tsx"),
 
       route("admin", "routes/admin/_layout.tsx", [
         route("products", "routes/admin/products.tsx"),
         route("products/new", "routes/admin/products.new.tsx"),
         route("products/:id/edit", "routes/admin/products.$id.edit.tsx"),
         route("orders", "routes/admin/orders.tsx"),
+        route("users/:id", "routes/admin/users.$id.tsx"),
       ]),
       route("supplier", "routes/supplier/_layout.tsx", [
         route("products", "routes/supplier/products.tsx"),

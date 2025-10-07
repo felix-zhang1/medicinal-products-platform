@@ -156,11 +156,13 @@ function defineModelRelations() {
 
   // Supplier ↔ User（拥有者）
   Supplier.belongsTo(User, {
+    as: "owner",
     foreignKey: { name: "owner_user_id", allowNull: true },
     onDelete: "SET NULL",
     onUpdate: "CASCADE",
   });
   User.hasOne(Supplier, {
+    as: "supplier",
     foreignKey: { name: "owner_user_id", allowNull: true },
   });
 

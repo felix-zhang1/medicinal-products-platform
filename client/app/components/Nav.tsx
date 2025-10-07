@@ -59,11 +59,16 @@ export default function Nav({ user }: { user: User | null }) {
           {/* Language switch */}
           <LanguageSwitcher />
           {user ? (
-            <Form method="post" action={`${prefix}/logout`}>
-              <button className="text-gray-600 underline">
-                {t("common:logout")}
-              </button>
-            </Form>
+            <>
+              <NavLink to={`${prefix}/account`} className={navLinkClass}>
+                {t("common:myProfile")}
+              </NavLink>
+              <Form method="post" action={`${prefix}/logout`}>
+                <button className="text-gray-600 underline">
+                  {t("common:logout")}
+                </button>
+              </Form>
+            </>
           ) : (
             <>
               <NavLink to={`${prefix}/login`} className={navLinkClass}>
