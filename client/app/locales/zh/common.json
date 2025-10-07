@@ -94,5 +94,11 @@
   "overview": "概况",
   "locationPreview": "位置预览",
   "noLocationSet": "未设置位置",
-  "userSecuritySettings": "用户安全设置"
+  "userSecuritySettings": "用户安全设置",
+  "selectAnImageToUpload": "选择一个图片上传",
+  "editProfile": "编辑用户信息",
+  "editSupplier": "编辑供货商信息",
+  "newPassword": "新密码",
+  "optional": "可选",
+  "viewSupplier": "查看供货商信息"
 }

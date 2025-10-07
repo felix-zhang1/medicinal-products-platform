@@ -102,7 +102,9 @@ export default function ProductFormFields({
         </div>
       )}
 
-      {/* Todo: Add a field for entering an online image URL. */}
+      <label className="text-sm text-gray-600">
+        {t("common:selectAnImageToUpload")}
+      </label>
       <input
         name="image"
         type="file"

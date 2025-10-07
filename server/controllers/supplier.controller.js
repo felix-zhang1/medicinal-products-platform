@@ -5,6 +5,55 @@ import {
   saveImageFromUrl,
 } from "../services/image.service.js";
 
+/**
+ * Resolves an incoming image source from either an uploaded file or a provided URL.
+ *
+ * Priority:
+ *  1. If a file is uploaded (req.file), validate and save it locally.
+ *  2. Otherwise, check req.body.image_url:
+ *     - Use directly if it's a local /uploads/ path.
+ *     - Download and save if it's a remote http(s) URL.
+ *  3. Throw an error for unsupported or invalid inputs.
+ *
+ * @param {import("express").Request} req - Express request containing file or URL.
+ * @param {string} [subdir="suppliers"] - Subdirectory under /uploads/ for saving images.
+ * @returns {Promise<string|null>} The saved image path or null if no image is provided.
+ * @throws {Error} If the file type or image_url is invalid.
+ */
+async function resolveIncomingImage(req, subdir = "suppliers") {
+  // A. Case 1: File is uploaded — prioritize processing the file
+  if (req.file) {
+    const mime = req.file.mimetype || "";
+    if (!mime.startsWith("image/")) {
+      const err = new Error("Unsupported file type");
+      err.status = 400;
+      throw err;
+    }
+    // Compress, convert, and save the image to /uploads/suppliers/*.jpg
+    return await saveImageFromBuffer(req.file.buffer, subdir);
+  }
+
+  // B. Case 2: No file — check if image_url is provided
+  const raw = (req.body.image_url ?? "").trim();
+  if (!raw) return null;
+
+  // Already a local relative path in our storage — use it directly
+  if (raw.startsWith("/uploads/")) return raw;
+
+  // Remote URL: download the image, compress, and save it locally
+  if (/^https?:\/\//i.test(raw)) {
+    return await saveImageFromUrl(raw, subdir);
+  }
+
+  // Any other case is considered invalid —
+  // reject to prevent storing inaccessible or unsafe paths in the database
+  const err = new Error(
+    "image_url must be an http(s) URL or start with /uploads/"
+  );
+  err.status = 400;
+  throw err;
+}
+
 class SupplierController {
   constructor() {}
 
@@ -119,10 +168,13 @@ class SupplierController {
         }
       }
 
+      // 统一处理图片（文件优先，其次远程 URL）
+      const finalImageUrl = await resolveIncomingImage(req, "suppliers");
+
       const newSupplier = await Supplier.create({
         name: trimmedName,
         description: description ?? null,
-        image_url: image_url ?? null,
+        image_url: finalImageUrl ?? null,
         address: address ?? null,
         place_id: place_id ?? null,
         formatted_address: formatted_address ?? null,
@@ -233,6 +285,22 @@ class SupplierController {
               .json({ error: "address_components must be JSON" });
           }
         }
+      }
+
+      // 图片处理：
+      // 1 如果传了文件或可用的 image_url（http(s)/uploads），保存/解析为最终地址
+      // 2 如果显式传了空字符串 image_url=""，则清空图片
+      // 3 如果两者都没有传，保持不变
+      const trimmedImageUrl =
+        typeof image_url === "string" ? image_url.trim() : undefined;
+
+      // 文件或有效 URL → 生成最终地址
+      const resolved = await resolveIncomingImage(req, "suppliers");
+      if (resolved) {
+        payload.image_url = resolved;
+      } else if (trimmedImageUrl !== undefined && trimmedImageUrl === "") {
+        // 显式清空
+        payload.image_url = null;
       }
 
       const [updatedCount] = await Supplier.update(payload, { where: { id } });

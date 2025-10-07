@@ -11,6 +11,8 @@ import type { Product, Review } from "~/lib/types";
 import { isAuthedServer } from "~/lib/auth.server";
 import { useTranslation } from "react-i18next";
 import { Button } from "~/components/ui/Button";
+import { Link } from "react-router-dom";
+import { usePrefix } from "~/hooks/usePrefix";
 
 export async function loader({
   request,
@@ -80,6 +82,8 @@ export default function ProductDetail() {
 
   const { t } = useTranslation();
 
+  const prefix = usePrefix();
+
   // 为了禁止supplier和admin角色使用"add to cart"按钮及功能(只有在"已登录"和"supplier或者admin"角色时,isForbidden才为true)
   const isForbidden = authed && (role === "supplier" || role === "admin");
 
@@ -96,6 +100,18 @@ export default function ProductDetail() {
           <p className="text-gray-600">{product.description}</p>
         )}
         <p className="text-xl font-bold">NZ${product.price.toFixed(2)}</p>
+        {/* Supplier link */}
+        {product.supplier_id ? (
+          <p className="text-sm text-gray-600">
+            {t("common:supplierRole")}:{" "}
+            <Link
+              to={`${prefix}/suppliers/${product.supplier_id}`}
+              className="underline"
+            >
+              {t("common:viewSupplier")}
+            </Link>
+          </p>
+        ) : null}
 
         {/* Add to Cart：只给 buyer 显示 */}
         <Form

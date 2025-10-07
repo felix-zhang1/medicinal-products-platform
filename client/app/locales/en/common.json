@@ -94,5 +94,11 @@
   "overview": "Overview",
   "locationPreview": "Location preview",
   "noLocationSet": "No location set",
-  "userSecuritySettings": "User Security Settings"
+  "userSecuritySettings": "User Security Settings",
+  "selectAnImageToUpload": "Select an image to upload",
+  "editProfile": "Edit Profile",
+  "editSupplier": "Edit Supplier",
+  "newPassword": "New Password",
+  "optional": "Optional",
+  "viewSupplier": "View Supplier"
 }

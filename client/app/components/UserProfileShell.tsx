@@ -1,6 +1,8 @@
 import { useMemo } from "react";
 import SupplierMap from "./SupplierMap";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
+import { Button } from "~/components/ui/Button";
 
 type SupplierInfo = {
   id: number;
@@ -22,6 +24,8 @@ type UserInfo = {
 };
 
 export default function UserProfileShell({ user }: { user: UserInfo }) {
+  const navigate = useNavigate();
+
   const { t } = useTranslation();
 
   const isAdmin = user.role === "admin";
@@ -50,6 +54,13 @@ export default function UserProfileShell({ user }: { user: UserInfo }) {
       {/* Overview */}
       <div className="rounded-xl border p-4">
         <h3 className="text-lg font-semibold mb-3">{t("common:overview")}</h3>
+        <Button
+          size="sm"
+          onClick={() => navigate("edit")}
+          leadingIcon={<span aria-hidden>✏️</span>}
+        >
+          {t("common:editProfile")}
+        </Button>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
           <div>
             <span className="text-gray-500">{t("common:userId")}:</span>{" "}
@@ -76,6 +87,13 @@ export default function UserProfileShell({ user }: { user: UserInfo }) {
           <h3 className="text-lg font-semibold mb-3">
             {t("common:supplierRole")}
           </h3>
+          <Button
+            size="sm"
+            onClick={() => navigate("supplier/edit")}
+            leadingIcon={<span aria-hidden>✏️</span>}
+          >
+            {t("common:editSupplier")}
+          </Button>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
             <div>
               <span className="text-gray-500">{t("common:supplierId")}:</span>{" "}
