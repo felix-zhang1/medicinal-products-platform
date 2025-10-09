@@ -9,9 +9,7 @@ import {
 } from "./core/server.js";
 
 // Load environment variable configurations, set server protocol, host, port
-const PROTOCOL = process.env.PROTOCOL || "http";
-const HOST = process.env.HOST || "localhost";
-const PORT = process.env.PORT || 8000;
+const PORT = Number(process.env.PORT || 8000);
 
 // start the server
 async function startServer() {
@@ -21,7 +19,7 @@ async function startServer() {
   try {
     app.listen(PORT, () => {
       console.log(
-        `server running successfully at ${PROTOCOL}://${HOST}:${PORT}`
+        `server running on port ${PORT}`
       );
     });
   } catch (error) {
