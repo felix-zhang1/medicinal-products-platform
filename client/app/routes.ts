@@ -25,6 +25,7 @@ export default [
       route("account/edit", "routes/account.edit.tsx"),
       route("account/supplier/edit", "routes/account.supplier.edit.tsx"),
       route("suppliers/:id", "routes/suppliers.$id.tsx"),
+      route("about-me", "routes/about-me.tsx"),
 
       route("admin", "routes/admin/_layout.tsx", [
         route("products", "routes/admin/products.tsx"),

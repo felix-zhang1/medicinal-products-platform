@@ -109,6 +109,7 @@ export default function UserProfileShell({ user }: { user: UserInfo }) {
             </div>
             {supplier.image_url && (
               <div className="md:col-span-2">
+                <p className="text-sm text-gray-600 mb-1">{t("common:logo")}</p>
                 <img
                   src={supplier.image_url}
                   alt="supplier"

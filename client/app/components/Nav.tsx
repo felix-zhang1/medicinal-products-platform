@@ -7,15 +7,15 @@ import { useTranslation } from "react-i18next";
 // common highlight style (with bottom border)
 function navLinkClass({ isActive }: { isActive: boolean }) {
   return isActive
-    ? "text-blue-600 font-semibold border-b-2 border-blue-600 pb-1"
-    : "text-gray-600 hover:text-blue-500";
+    ? "text-green-600 font-semibold border-b-2 border-green-600 pb-1"
+    : "text-gray-600 hover:text-green-500";
 }
 
 export default function Nav({ user }: { user: User | null }) {
   const prefix = usePrefix();
   const { t } = useTranslation(["home", "common"]);
   return (
-    <header className="border-b bg-white/80 backdrop-blur">
+    <header className="border-b bg-green-50/80  backdrop-blur shadow-sm">
       <nav className="mx-auto max-w-6xl px-4 py-3 flex items-center gap-4">
         {/* for all roles */}
         <NavLink to={`${prefix}/`} end className={navLinkClass}>

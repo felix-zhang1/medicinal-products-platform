@@ -25,7 +25,7 @@ import { useTranslation } from "react-i18next";
 
 type CategoryPanelProps = {
   title: string;
-  bgUrl: string;
+  bgUrl?: string;
   browseLink: string;
   items: Product[];
   className?: string;
@@ -43,7 +43,7 @@ const CategoryPanel = memo(function CategoryPanel({
   const { t } = useTranslation();
 
   const bgStyle = useMemo(
-    () => ({ backgroundImage: `url(${bgUrl})` }),
+    () => (bgUrl ? { backgroundImage: `url(${bgUrl})` } : {}),
     [bgUrl]
   );
 

@@ -9,13 +9,14 @@ import Nav from "~/components/Nav";
 import { createServerApi } from "~/lib/net";
 import type { User } from "~/lib/types";
 import i18n from "~/i18n";
+import Footer from "~/components/Footer";
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
   // Get the route dynamic parameter (en or zh); if i18n.language is different, switch to the parameter value
-  const urlLng = params.lng;                  // 允许任何 :lng 命中
+  const urlLng = params.lng; // 允许任何 :lng 命中
   const supported = new Set(["en", "zh"]);
 
-   // 如果没有语言码或不受支持，直接 302 到 /en
+  // 如果没有语言码或不受支持，直接 302 到 /en
   if (!urlLng || !supported.has(urlLng)) {
     throw redirect("/en");
   }
@@ -35,20 +36,26 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 }
 
 export default function RootLayout() {
-  const { user, lng } = useLoaderData() as { user: User | null; lng: "en" | "zh" };
+  const { user, lng } = useLoaderData() as {
+    user: User | null;
+    lng: "en" | "zh";
+  };
 
-   useEffect(() => {
+  useEffect(() => {
     if (i18n.language !== lng) {
       i18n.changeLanguage(lng);
     }
   }, [lng]);
-  
+
   return (
-    <div className="min-h-screen bg-white text-gray-900">
+    <div className="min-h-screen flex flex-col bg-white text-gray-900">
       <Nav user={user} />
-      <main className="mx-auto max-w-6xl p-4">
+
+      <main className="flex-1 mx-auto max-w-6xl p-4">
         <Outlet />
       </main>
+
+      <Footer />
     </div>
   );
 }
