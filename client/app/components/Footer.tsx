@@ -8,7 +8,12 @@ export default function Footer() {
     <footer className="bg-gray-100 text-gray-600 mt-10 border-t border-gray-200">
       <div className="max-w-6xl mx-auto px-4 py-8 grid gap-6 md:grid-cols-3">
         {/* 左侧：品牌 / Logo */}
-        <div>
+        <div className="text-center">
+          <img
+            src="/myicon.png"
+            alt="logo"
+            className="mx-auto h-12 w-12 mb-2 object-contain"
+          />
           <h2 className="text-xl font-semibold text-gray-800">
             {t("common:appName")}
           </h2>
@@ -39,9 +44,7 @@ export default function Footer() {
           <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-700">
             {t("common:followMe")}
           </h3>
-          <p className="mt-2">
-            {t("common:followMeDescription")}
-          </p>
+          <p className="mt-2">{t("common:followMeDescription")}</p>
           <div className="flex space-x-3 mt-3">
             <a
               href="https://github.com/felix-zhang1/medicinal-products-platform"
