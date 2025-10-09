@@ -1,0 +1,628 @@
+{
+  "buildManifest": {
+    "serverBundles": {
+      "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0": {
+        "id": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+        "file": "build/server/nodejs_eyJydW50aW1lIjoibm9kZWpzIn0/index.js",
+        "config": {
+          "runtime": "nodejs"
+        }
+      }
+    },
+    "routeIdToServerBundleId": {
+      "routes/redirect-to-en": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/home": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/products": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/products.$id": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/cart": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/favorites": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/orders": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/orders.$id": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/login": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/register": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/logout": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/payments.$id": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/account": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/account.edit": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/account.supplier.edit": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/suppliers.$id": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/about-me": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/admin/_layout": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/admin/products": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/admin/products.new": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/admin/products.$id.edit": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/admin/orders": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/admin/users.$id": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/supplier/_layout": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/supplier/products": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/supplier/products.new": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/supplier/products.$id.edit": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/supplier/setup": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0"
+    },
+    "routes": {
+      "root": {
+        "id": "root",
+        "file": "app/root.tsx",
+        "path": "",
+        "config": {}
+      },
+      "routes/redirect-to-en": {
+        "id": "routes/redirect-to-en",
+        "parentId": "root",
+        "file": "app/routes/redirect-to-en.tsx",
+        "index": true,
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/_layout": {
+        "id": "routes/_layout",
+        "parentId": "root",
+        "file": "app/routes/_layout.tsx",
+        "path": ":lng",
+        "config": {}
+      },
+      "routes/home": {
+        "id": "routes/home",
+        "parentId": "routes/_layout",
+        "file": "app/routes/home.tsx",
+        "index": true,
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/products": {
+        "id": "routes/products",
+        "parentId": "routes/_layout",
+        "file": "app/routes/products.tsx",
+        "path": "products",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/products.$id": {
+        "id": "routes/products.$id",
+        "parentId": "routes/_layout",
+        "file": "app/routes/products.$id.tsx",
+        "path": "products/:id",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/cart": {
+        "id": "routes/cart",
+        "parentId": "routes/_layout",
+        "file": "app/routes/cart.tsx",
+        "path": "cart",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/favorites": {
+        "id": "routes/favorites",
+        "parentId": "routes/_layout",
+        "file": "app/routes/favorites.tsx",
+        "path": "favorites",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/orders": {
+        "id": "routes/orders",
+        "parentId": "routes/_layout",
+        "file": "app/routes/orders.tsx",
+        "path": "orders",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/orders.$id": {
+        "id": "routes/orders.$id",
+        "parentId": "routes/_layout",
+        "file": "app/routes/orders.$id.tsx",
+        "path": "orders/:id",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/login": {
+        "id": "routes/login",
+        "parentId": "routes/_layout",
+        "file": "app/routes/login.tsx",
+        "path": "login",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/register": {
+        "id": "routes/register",
+        "parentId": "routes/_layout",
+        "file": "app/routes/register.tsx",
+        "path": "register",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/logout": {
+        "id": "routes/logout",
+        "parentId": "routes/_layout",
+        "file": "app/routes/logout.tsx",
+        "path": "logout",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/payments.$id": {
+        "id": "routes/payments.$id",
+        "parentId": "routes/_layout",
+        "file": "app/routes/payments.$id.tsx",
+        "path": "payments/:id",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/account": {
+        "id": "routes/account",
+        "parentId": "routes/_layout",
+        "file": "app/routes/account.tsx",
+        "path": "account",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/account.edit": {
+        "id": "routes/account.edit",
+        "parentId": "routes/_layout",
+        "file": "app/routes/account.edit.tsx",
+        "path": "account/edit",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/account.supplier.edit": {
+        "id": "routes/account.supplier.edit",
+        "parentId": "routes/_layout",
+        "file": "app/routes/account.supplier.edit.tsx",
+        "path": "account/supplier/edit",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/suppliers.$id": {
+        "id": "routes/suppliers.$id",
+        "parentId": "routes/_layout",
+        "file": "app/routes/suppliers.$id.tsx",
+        "path": "suppliers/:id",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/about-me": {
+        "id": "routes/about-me",
+        "parentId": "routes/_layout",
+        "file": "app/routes/about-me.tsx",
+        "path": "about-me",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/admin/_layout": {
+        "id": "routes/admin/_layout",
+        "parentId": "routes/_layout",
+        "file": "app/routes/admin/_layout.tsx",
+        "path": "admin",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/admin/products": {
+        "id": "routes/admin/products",
+        "parentId": "routes/admin/_layout",
+        "file": "app/routes/admin/products.tsx",
+        "path": "products",
+        "config": {}
+      },
+      "routes/admin/products.new": {
+        "id": "routes/admin/products.new",
+        "parentId": "routes/admin/_layout",
+        "file": "app/routes/admin/products.new.tsx",
+        "path": "products/new",
+        "config": {}
+      },
+      "routes/admin/products.$id.edit": {
+        "id": "routes/admin/products.$id.edit",
+        "parentId": "routes/admin/_layout",
+        "file": "app/routes/admin/products.$id.edit.tsx",
+        "path": "products/:id/edit",
+        "config": {}
+      },
+      "routes/admin/orders": {
+        "id": "routes/admin/orders",
+        "parentId": "routes/admin/_layout",
+        "file": "app/routes/admin/orders.tsx",
+        "path": "orders",
+        "config": {}
+      },
+      "routes/admin/users.$id": {
+        "id": "routes/admin/users.$id",
+        "parentId": "routes/admin/_layout",
+        "file": "app/routes/admin/users.$id.tsx",
+        "path": "users/:id",
+        "config": {}
+      },
+      "routes/supplier/_layout": {
+        "id": "routes/supplier/_layout",
+        "parentId": "routes/_layout",
+        "file": "app/routes/supplier/_layout.tsx",
+        "path": "supplier",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/supplier/products": {
+        "id": "routes/supplier/products",
+        "parentId": "routes/supplier/_layout",
+        "file": "app/routes/supplier/products.tsx",
+        "path": "products",
+        "config": {}
+      },
+      "routes/supplier/products.new": {
+        "id": "routes/supplier/products.new",
+        "parentId": "routes/supplier/_layout",
+        "file": "app/routes/supplier/products.new.tsx",
+        "path": "products/new",
+        "config": {}
+      },
+      "routes/supplier/products.$id.edit": {
+        "id": "routes/supplier/products.$id.edit",
+        "parentId": "routes/supplier/_layout",
+        "file": "app/routes/supplier/products.$id.edit.tsx",
+        "path": "products/:id/edit",
+        "config": {}
+      },
+      "routes/supplier/setup": {
+        "id": "routes/supplier/setup",
+        "parentId": "routes/supplier/_layout",
+        "file": "app/routes/supplier/setup.tsx",
+        "path": "setup",
+        "config": {}
+      }
+    }
+  },
+  "reactRouterConfig": {
+    "appDirectory": "/home/felix/projects/medicinal-products-platform/client/app",
+    "basename": "/",
+    "buildDirectory": "/home/felix/projects/medicinal-products-platform/client/build",
+    "future": {
+      "unstable_middleware": false,
+      "unstable_optimizeDeps": false,
+      "unstable_splitRouteModules": false,
+      "unstable_subResourceIntegrity": false,
+      "unstable_viteEnvironmentApi": false
+    },
+    "routes": {
+      "root": {
+        "id": "root",
+        "file": "root.tsx",
+        "path": ""
+      },
+      "routes/redirect-to-en": {
+        "id": "routes/redirect-to-en",
+        "parentId": "root",
+        "file": "routes/redirect-to-en.tsx",
+        "index": true
+      },
+      "routes/_layout": {
+        "id": "routes/_layout",
+        "parentId": "root",
+        "file": "routes/_layout.tsx",
+        "path": ":lng"
+      },
+      "routes/home": {
+        "id": "routes/home",
+        "parentId": "routes/_layout",
+        "file": "routes/home.tsx",
+        "index": true
+      },
+      "routes/products": {
+        "id": "routes/products",
+        "parentId": "routes/_layout",
+        "file": "routes/products.tsx",
+        "path": "products"
+      },
+      "routes/products.$id": {
+        "id": "routes/products.$id",
+        "parentId": "routes/_layout",
+        "file": "routes/products.$id.tsx",
+        "path": "products/:id"
+      },
+      "routes/cart": {
+        "id": "routes/cart",
+        "parentId": "routes/_layout",
+        "file": "routes/cart.tsx",
+        "path": "cart"
+      },
+      "routes/favorites": {
+        "id": "routes/favorites",
+        "parentId": "routes/_layout",
+        "file": "routes/favorites.tsx",
+        "path": "favorites"
+      },
+      "routes/orders": {
+        "id": "routes/orders",
+        "parentId": "routes/_layout",
+        "file": "routes/orders.tsx",
+        "path": "orders"
+      },
+      "routes/orders.$id": {
+        "id": "routes/orders.$id",
+        "parentId": "routes/_layout",
+        "file": "routes/orders.$id.tsx",
+        "path": "orders/:id"
+      },
+      "routes/login": {
+        "id": "routes/login",
+        "parentId": "routes/_layout",
+        "file": "routes/login.tsx",
+        "path": "login"
+      },
+      "routes/register": {
+        "id": "routes/register",
+        "parentId": "routes/_layout",
+        "file": "routes/register.tsx",
+        "path": "register"
+      },
+      "routes/logout": {
+        "id": "routes/logout",
+        "parentId": "routes/_layout",
+        "file": "routes/logout.tsx",
+        "path": "logout"
+      },
+      "routes/payments.$id": {
+        "id": "routes/payments.$id",
+        "parentId": "routes/_layout",
+        "file": "routes/payments.$id.tsx",
+        "path": "payments/:id"
+      },
+      "routes/account": {
+        "id": "routes/account",
+        "parentId": "routes/_layout",
+        "file": "routes/account.tsx",
+        "path": "account"
+      },
+      "routes/account.edit": {
+        "id": "routes/account.edit",
+        "parentId": "routes/_layout",
+        "file": "routes/account.edit.tsx",
+        "path": "account/edit"
+      },
+      "routes/account.supplier.edit": {
+        "id": "routes/account.supplier.edit",
+        "parentId": "routes/_layout",
+        "file": "routes/account.supplier.edit.tsx",
+        "path": "account/supplier/edit"
+      },
+      "routes/suppliers.$id": {
+        "id": "routes/suppliers.$id",
+        "parentId": "routes/_layout",
+        "file": "routes/suppliers.$id.tsx",
+        "path": "suppliers/:id"
+      },
+      "routes/about-me": {
+        "id": "routes/about-me",
+        "parentId": "routes/_layout",
+        "file": "routes/about-me.tsx",
+        "path": "about-me"
+      },
+      "routes/admin/_layout": {
+        "id": "routes/admin/_layout",
+        "parentId": "routes/_layout",
+        "file": "routes/admin/_layout.tsx",
+        "path": "admin"
+      },
+      "routes/admin/products": {
+        "id": "routes/admin/products",
+        "parentId": "routes/admin/_layout",
+        "file": "routes/admin/products.tsx",
+        "path": "products"
+      },
+      "routes/admin/products.new": {
+        "id": "routes/admin/products.new",
+        "parentId": "routes/admin/_layout",
+        "file": "routes/admin/products.new.tsx",
+        "path": "products/new"
+      },
+      "routes/admin/products.$id.edit": {
+        "id": "routes/admin/products.$id.edit",
+        "parentId": "routes/admin/_layout",
+        "file": "routes/admin/products.$id.edit.tsx",
+        "path": "products/:id/edit"
+      },
+      "routes/admin/orders": {
+        "id": "routes/admin/orders",
+        "parentId": "routes/admin/_layout",
+        "file": "routes/admin/orders.tsx",
+        "path": "orders"
+      },
+      "routes/admin/users.$id": {
+        "id": "routes/admin/users.$id",
+        "parentId": "routes/admin/_layout",
+        "file": "routes/admin/users.$id.tsx",
+        "path": "users/:id"
+      },
+      "routes/supplier/_layout": {
+        "id": "routes/supplier/_layout",
+        "parentId": "routes/_layout",
+        "file": "routes/supplier/_layout.tsx",
+        "path": "supplier"
+      },
+      "routes/supplier/products": {
+        "id": "routes/supplier/products",
+        "parentId": "routes/supplier/_layout",
+        "file": "routes/supplier/products.tsx",
+        "path": "products"
+      },
+      "routes/supplier/products.new": {
+        "id": "routes/supplier/products.new",
+        "parentId": "routes/supplier/_layout",
+        "file": "routes/supplier/products.new.tsx",
+        "path": "products/new"
+      },
+      "routes/supplier/products.$id.edit": {
+        "id": "routes/supplier/products.$id.edit",
+        "parentId": "routes/supplier/_layout",
+        "file": "routes/supplier/products.$id.edit.tsx",
+        "path": "products/:id/edit"
+      },
+      "routes/supplier/setup": {
+        "id": "routes/supplier/setup",
+        "parentId": "routes/supplier/_layout",
+        "file": "routes/supplier/setup.tsx",
+        "path": "setup"
+      }
+    },
+    "routeDiscovery": {
+      "mode": "lazy",
+      "manifestPath": "/__manifest"
+    },
+    "serverBuildFile": "index.js",
+    "serverModuleFormat": "esm",
+    "ssr": true,
+    "unstable_routeConfig": [
+      {
+        "id": "root",
+        "path": "",
+        "file": "root.tsx",
+        "children": [
+          {
+            "file": "routes/redirect-to-en.tsx",
+            "index": true
+          },
+          {
+            "path": ":lng",
+            "file": "routes/_layout.tsx",
+            "children": [
+              {
+                "file": "routes/home.tsx",
+                "index": true
+              },
+              {
+                "file": "routes/products.tsx",
+                "path": "products"
+              },
+              {
+                "file": "routes/products.$id.tsx",
+                "path": "products/:id"
+              },
+              {
+                "file": "routes/cart.tsx",
+                "path": "cart"
+              },
+              {
+                "file": "routes/favorites.tsx",
+                "path": "favorites"
+              },
+              {
+                "file": "routes/orders.tsx",
+                "path": "orders"
+              },
+              {
+                "file": "routes/orders.$id.tsx",
+                "path": "orders/:id"
+              },
+              {
+                "file": "routes/login.tsx",
+                "path": "login"
+              },
+              {
+                "file": "routes/register.tsx",
+                "path": "register"
+              },
+              {
+                "file": "routes/logout.tsx",
+                "path": "logout"
+              },
+              {
+                "file": "routes/payments.$id.tsx",
+                "path": "payments/:id"
+              },
+              {
+                "file": "routes/account.tsx",
+                "path": "account"
+              },
+              {
+                "file": "routes/account.edit.tsx",
+                "path": "account/edit"
+              },
+              {
+                "file": "routes/account.supplier.edit.tsx",
+                "path": "account/supplier/edit"
+              },
+              {
+                "file": "routes/suppliers.$id.tsx",
+                "path": "suppliers/:id"
+              },
+              {
+                "file": "routes/about-me.tsx",
+                "path": "about-me"
+              },
+              {
+                "file": "routes/admin/_layout.tsx",
+                "children": [
+                  {
+                    "file": "routes/admin/products.tsx",
+                    "path": "products"
+                  },
+                  {
+                    "file": "routes/admin/products.new.tsx",
+                    "path": "products/new"
+                  },
+                  {
+                    "file": "routes/admin/products.$id.edit.tsx",
+                    "path": "products/:id/edit"
+                  },
+                  {
+                    "file": "routes/admin/orders.tsx",
+                    "path": "orders"
+                  },
+                  {
+                    "file": "routes/admin/users.$id.tsx",
+                    "path": "users/:id"
+                  }
+                ],
+                "path": "admin"
+              },
+              {
+                "file": "routes/supplier/_layout.tsx",
+                "children": [
+                  {
+                    "file": "routes/supplier/products.tsx",
+                    "path": "products"
+                  },
+                  {
+                    "file": "routes/supplier/products.new.tsx",
+                    "path": "products/new"
+                  },
+                  {
+                    "file": "routes/supplier/products.$id.edit.tsx",
+                    "path": "products/:id/edit"
+                  },
+                  {
+                    "file": "routes/supplier/setup.tsx",
+                    "path": "setup"
+                  }
+                ],
+                "path": "supplier"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "viteConfig": {
+    "build": {
+      "assetsDir": "assets"
+    }
+  }
+}

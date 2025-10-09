@@ -45,7 +45,8 @@ app.use(
     origin: [
       "http://localhost:5173",
       "http://127.0.0.1:5173",
-      process.env.CLIENT_ORIGIN,
+      /\.vercel\.app$/,
+      "https://med.felixzhang.site ",
     ].filter(Boolean),
     credentials: true,
   })
@@ -77,6 +78,9 @@ app.use("/api/reviews", reviewRoutes);
 
 // 仅包含 create-intent 的路由挂这里
 app.use("/api/payment", paymentRoutes);
+
+// 健康检测路由（放在所有中间件和路由注册之后、错误处理中间件之前）
+app.get('/health', (req, res) => res.send('ok'));
 
 app.use((err, req, res, next) => {
   const status = Number.isInteger(err.status) ? err.status : 500;
