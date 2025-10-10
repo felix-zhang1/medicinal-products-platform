@@ -1,17 +1,22 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
-import languageDector from "i18next-browser-languagedetector";
+import LanguageDetector from "i18next-browser-languagedetector";
 import resourcesToBackend from "i18next-resources-to-backend";
 
+const modules = import.meta.glob("./locales/*/*.json");
+
 void i18n
-  .use(languageDector)
-  .use(initReactI18next)
+  .use(LanguageDetector)
   .use(
-    resourcesToBackend(
-      (lng: string, ns: string) =>
-        import(/* @vite-ignore*/ `./locales/${lng}/${ns}.json`)
-    )
+    resourcesToBackend((lng: string, ns: string) => {
+      const key = `./locales/${lng}/${ns}.json`;
+      const loader = modules[key];
+      if (!loader)
+        return Promise.reject(new Error(`Missing i18n file: ${key}`));
+      return (loader as any)(); // 触发实际动态 import
+    })
   )
+  .use(initReactI18next)
   .init({
     fallbackLng: "en",
     supportedLngs: ["en", "zh"],
@@ -22,7 +27,7 @@ void i18n
       lookupFromPathIndex: 0,
     },
     interpolation: { escapeValue: false },
-    react: { useSuspense: true },
+    react: { useSuspense: false },
   });
 
 export default i18n;
