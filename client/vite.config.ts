@@ -6,6 +6,7 @@ import tsconfigPaths from "vite-tsconfig-paths";
 export default defineConfig({
   plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
   server: {
+    // 仅在开发环境生效
     proxy: {
       "/api": {
         target: "http://localhost:8000",
