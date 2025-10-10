@@ -12,7 +12,7 @@ const sequelize = new Sequelize(
     logging: false,
     dialectOptions: {
       decimalNumbers: true,
-      ssl: process.env.DB_SSL === "true" ? { require: true } : false,
+      // ssl: process.env.DB_SSL === "true" ? { require: true } : false,
       rejectUnauthorized: false,
     },
   }
