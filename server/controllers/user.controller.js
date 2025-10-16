@@ -13,6 +13,7 @@ import Supplier from "../models/supplier.model.js";
  * @param {string | undefined} queryInclude - The "include" query parameter.
  * @returns {Array} Sequelize include array.
  */
+
 function withIncludes(queryInclude) {
   // convert to string to avoid null/undefined errors
   const inc = String(queryInclude || "");

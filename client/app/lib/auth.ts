@@ -1,4 +1,22 @@
-// /home/felix/projects/medicinal-products-platform/client/app/lib/auth.ts
+/**
+ * ===============================================================
+ *  Auth Utility Module (Universal)
+ *  ---------------------------------------------------------------
+ *  An authentication helper for both browser and Node.js.
+ *  Provides consistent JWT parsing, token storage, and user state access.
+ *
+ *  Features:
+ *  - Store, read, and remove JWT tokens from localStorage
+ *  - Decode Base64URL safely in browser or Node.js
+ *  - Parse user info (id, role) from JWT payload
+ *  - Check login state and manage logout
+ *
+ *  Usage:
+ *    import { auth } from "@/utils/auth";
+ *    if (auth.isAuthed()) console.log(auth.payload());
+ * ===============================================================
+ */
+
 const KEY = "mp_token";
 
 const isBrowser =

@@ -1,3 +1,31 @@
+/**
+ * ===============================================================
+ *  Axios API Client Configuration (Universal)
+ *  ---------------------------------------------------------------
+ *  This module provides two Axios instances:
+ *
+ *  1. `api` – for browser-side requests:
+ *     - Uses a relative baseURL (`/api`)
+ *     - Sends and receives cookies automatically (`withCredentials: true`)
+ *
+ *  2. `createServerApi(request)` – for server-side loaders/actions (SSR):
+ *     - Reads the original request’s Cookie and Authorization headers
+ *     - Forwards them to the backend API (`SERVER_API_ORIGIN`)
+ *     - Supports both Cookie-based and Bearer-token authentication
+ *
+ *  Environment variable:
+ *     SERVER_API_ORIGIN = backend base URL (default: http://localhost:8000)
+ *
+ *  Example usage:
+ *     // In browser (React component)
+ *     const res = await api.get("/products");
+ *
+ *     // In Remix loader (server)
+ *     const serverApi = createServerApi(request);
+ *     const res = await serverApi.get("/users");
+ * ===============================================================
+ */
+
 import axios, { type AxiosInstance, type CreateAxiosDefaults, type InternalAxiosRequestConfig } from "axios";
 import { getAuthTokenFromCookie } from "./auth.server";
 

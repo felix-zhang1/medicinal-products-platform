@@ -20,6 +20,7 @@ import {
  * @returns {Promise<string|null>} The saved image path or null if no image is provided.
  * @throws {Error} If the file type or image_url is invalid.
  */
+
 async function resolveIncomingImage(req, subdir = "suppliers") {
   // A. Case 1: File is uploaded — prioritize processing the file
   if (req.file) {

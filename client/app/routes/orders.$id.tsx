@@ -1,4 +1,3 @@
-// client/app/routes/orders.$id.tsx
 import {
   useLoaderData,
   redirect,
